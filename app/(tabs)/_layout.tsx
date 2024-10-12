@@ -5,6 +5,7 @@ import HomeScreen from "../screen/Home";
 import { Ionicons } from "@expo/vector-icons";
 import { Ionicons as IoniconsType } from "@expo/vector-icons";
 import HomeStack from "../stack/HomeStack/HomeStack";
+import ServiceScreen from "../screen/Service";
 
 function SettingsScreen() {
   return (
@@ -44,7 +45,7 @@ export default function Tabs() {
         options={{ tabBarLabel: "Home" }}
         component={HomeStack}
       />
-      <Tab.Screen name="Service" component={SettingsScreen} />
+      <Tab.Screen name="Service" component={ServiceScreen} />
       <Tab.Screen name="Account" component={SettingsScreen} />
     </Tab.Navigator>
   );
