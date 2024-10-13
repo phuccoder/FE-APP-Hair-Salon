@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { View } from "react-native";
-import { Chip, Divider, Text } from "react-native-elements";
+import { Text, View } from "react-native";
+import { Chip, Divider } from "react-native-elements";
 
 const categories = [
   { id: 1, name: "Category 1" },

@@ -5,7 +5,7 @@ import HomeScreen from "../screen/Home";
 import { Ionicons } from "@expo/vector-icons";
 import { Ionicons as IoniconsType } from "@expo/vector-icons";
 import HomeStack from "../stack/HomeStack/HomeStack";
-import ServiceScreen from "../screen/Service";
+import ServiceStack from "../stack/ServiceStack/ServiceStack";
 
 function SettingsScreen() {
   return (
@@ -28,7 +28,7 @@ export default function Tabs() {
             iconName = focused ? "home" : "home-outline";
           } else if (route.name === "Account") {
             iconName = focused ? "person" : "person-outline";
-          } else if (route.name === "Service") {
+          } else if (route.name === "ServiceStack") {
             iconName = focused ? "bag" : "bag-outline";
           }
 
@@ -45,7 +45,11 @@ export default function Tabs() {
         options={{ tabBarLabel: "Home" }}
         component={HomeStack}
       />
-      <Tab.Screen name="Service" component={ServiceScreen} />
+      <Tab.Screen
+        name="ServiceStack"
+        options={{ tabBarLabel: "Service" }}
+        component={ServiceStack}
+      />
       <Tab.Screen name="Account" component={SettingsScreen} />
     </Tab.Navigator>
   );
