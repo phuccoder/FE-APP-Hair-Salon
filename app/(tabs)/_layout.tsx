@@ -6,6 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Ionicons as IoniconsType } from "@expo/vector-icons";
 import HomeStack from "../stack/HomeStack/HomeStack";
 import ServiceStack from "../stack/ServiceStack/ServiceStack";
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 
 function SettingsScreen() {
   return (
@@ -20,25 +21,31 @@ const Tab = createBottomTabNavigator();
 export default function Tabs() {
   return (
     <Tab.Navigator
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName: keyof typeof IoniconsType.glyphMap | undefined; // Explicitly typing iconName
+      screenOptions={({ route }) => {
+        const routeName = getFocusedRouteNameFromRoute(route);
 
-          if (route.name === "HomeStack") {
-            iconName = focused ? "home" : "home-outline";
-          } else if (route.name === "Account") {
-            iconName = focused ? "person" : "person-outline";
-          } else if (route.name === "ServiceStack") {
-            iconName = focused ? "bag" : "bag-outline";
-          }
+        return {
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName: keyof typeof Ionicons.glyphMap | undefined; // Explicitly typing iconName
 
-          // Check if iconName is defined before using it
-          return iconName ? (
-            <Ionicons name={iconName} size={size} color={color} />
-          ) : null;
-        },
-        headerShown: false,
-      })}
+            if (route.name === "HomeStack") {
+              iconName = focused ? "home" : "home-outline";
+            } else if (route.name === "Account") {
+              iconName = focused ? "person" : "person-outline";
+            } else if (route.name === "ServiceStack") {
+              iconName = focused ? "bag" : "bag-outline";
+            }
+
+            return iconName ? (
+              <Ionicons name={iconName} size={size} color={color} />
+            ) : null;
+          },
+          headerShown: false,
+          tabBarStyle: {
+            display: routeName === "ServiceDetail" ? "none" : "flex",
+          },
+        };
+      }}
     >
       <Tab.Screen
         name="HomeStack"

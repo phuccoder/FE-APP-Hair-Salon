@@ -1,11 +1,9 @@
 // HomeStack.tsx
 import * as React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import HomeScreen from "../../screen/Home"; // Assuming your Home screen is here
-import { View } from "react-native";
-import { Button, Text } from "react-native-elements";
 import ServiceScreen from "@/app/screen/Service/ServiceList";
 import ServiceDetail from "@/app/screen/Service/ServiceDetail";
+import CustomHeader from "@/app/components/Header/CustomHeader";
 
 const Stack = createNativeStackNavigator();
 export default function ServiceStack() {
@@ -21,9 +19,8 @@ export default function ServiceStack() {
         component={ServiceDetail}
         options={{
           title: "Details",
-          headerShown: true,
+          header: () => <CustomHeader title="Details" />, // Use custom header
         }}
-
       />
     </Stack.Navigator>
   );

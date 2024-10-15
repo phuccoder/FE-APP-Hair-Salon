@@ -108,7 +108,7 @@ const ServiceScreen = ({ navigation }: any) => {
                         ...style.shadowStyle,
                       },
                     }}
-                    navigation={() =>
+                    onPress={() =>
                       navigation.navigate("ServiceDetail", { data: item })
                     }
                   />

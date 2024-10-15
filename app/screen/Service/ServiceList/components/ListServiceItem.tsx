@@ -8,12 +8,12 @@ interface ListServiceItemProps {
   props?: CardProps;
   cardImage?: any;
   data: any;
-  navigation?: any
+  onPress?: any
 }
 
-const ListServiceItem = ({ props, cardImage, data, navigation }: ListServiceItemProps) => {
+const ListServiceItem = ({ props, cardImage, data, onPress }: ListServiceItemProps) => {
   return (
-    <TouchableWithoutFeedback onPress={navigation}>
+    <TouchableWithoutFeedback onPress={onPress}>
       <Card {...props}>
         <Card.Image
           {...cardImage}
