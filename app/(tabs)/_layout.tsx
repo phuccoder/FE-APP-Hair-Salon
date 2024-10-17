@@ -40,12 +40,14 @@ export default function Tabs() {
               <Ionicons name={iconName} size={size} color={color} />
             ) : null;
           },
+          unmountOnBlur: true,
           headerShown: false,
           tabBarStyle: {
             display: routeName === "ServiceDetail" ? "none" : "flex",
           },
         };
       }}
+      
     >
       <Tab.Screen
         name="HomeStack"
