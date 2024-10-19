@@ -1,14 +1,15 @@
+import { Service } from "@/model/Service";
 import { formatPrice } from "@/utils/formatPrice";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
+  Dimensions,
   Image,
   ScrollView,
   StyleSheet,
   Text,
   View,
-  Dimensions,
 } from "react-native";
-import { Button, Divider } from "react-native-elements";
+import { Button, Chip, Divider } from "react-native-elements";
 
 interface ServiceDetailProps {
   route?: any;
@@ -18,9 +19,16 @@ const { width } = Dimensions.get("window"); // Get screen width for button layou
 
 const ServiceDetail = ({ route }: ServiceDetailProps) => {
   const { data } = route.params;
+  const [detail, setDetail] = useState<Service>(data);
+
+  useEffect(() => {
+    if (data) {
+      setDetail(data);
+    }
+  }, []);
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <ScrollView
         style={{ flex: 1, marginBottom: 70 }} // Leave space for the fixed buttons
         showsVerticalScrollIndicator={false}
@@ -34,20 +42,10 @@ const ServiceDetail = ({ route }: ServiceDetailProps) => {
           style={{ height: 350 }}
         />
         <View className="flex-1 flex-col gap-2 p-2">
-          <Text className="font-bold text-xl">{data.comboName}</Text>
-          <Text className="font-normal text-lg text-orange-600">
-            {formatPrice(data.comboPrice)}
+          <Text className="font-medium text-xl">{detail.serviceName}</Text>
+          <Text className="font-bold text-lg text-orange-600">
+            {formatPrice(detail.servicePrice)}
           </Text>
-          <View
-            className="border-[1px] border-gray-300 p-2 rounded-lg"
-            style={styles.shadowBox}
-          >
-            <Text className="text-lg font-bold">Combo description</Text>
-            <Divider />
-            <Text className="font-normal text-base">
-              {data.comboDescription}
-            </Text>
-          </View>
         </View>
       </ScrollView>
 

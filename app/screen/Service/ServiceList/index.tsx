@@ -1,64 +1,70 @@
+import useToast from "@/hooks/useToast";
+import { Combo, Service } from "@/model/Service";
+import { comboApi } from "@/service/serviceApi";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Dimensions,
   DrawerLayoutAndroid,
-  FlatList,
+  ScrollView,
   StyleSheet,
-  TextInput,
   View,
 } from "react-native";
-import { Button } from "react-native-elements";
+import { Button, Tab, Text } from "react-native-elements";
 import SearchBar from "react-native-elements/dist/searchbar/SearchBar-default";
 import FilterDrawer from "./components/FilterDrawer";
-import ListServiceItem from "./components/ListServiceItem";
-import { comboApi } from "@/service/serviceApi";
-import useToast from "@/hooks/useToast";
-
-const fakeData = [
-  {
-    id: 1,
-    name: "service1",
-    price: 100000,
-    service: "Cut, spa, massage",
-  },
-  {
-    id: 2,
-    name: "service1",
-    price: 100000,
-    service: "Cut, spa, massage",
-  },
-  {
-    id: 3,
-    name: "service1",
-    price: 100000,
-    service: "Cut, spa, massage",
-  },
-  {
-    id: 4,
-    name: "service1",
-    price: 100000,
-    service: "Cut, spa, massage",
-  },
-];
+import ListCombo from "./tabs/ListCombo";
+import ListService from "./tabs/ListService";
 
 const ServiceScreen = ({ navigation }: any) => {
   const { success, error, Toast } = useToast();
-  const [data, setData] = useState([]);
+  const [index, setIndex] = useState(0); // State for selected tab index
+  const [data, setData] = useState<Combo[]>([]);
+  const [dataService, setDataService] = useState([]);
   const [loading, setLoading] = useState(false);
   const drawer = useRef<DrawerLayoutAndroid>(null);
   const [search, setSearch] = useState<string>("");
-  const onChangeSearch = (e: string) => {
-    setSearch(e);
+  const [filtered, setFiltered] = useState<Combo[]>([]);
+  const [filteredService, setFilteredService] = useState<Service[]>([]); // Filtered Service list
+  const [totalSearch, setTotalSearch] = useState(0);
+
+  // Handle search input change
+  const onChangeSearch = (query: string) => {
+    setSearch(query);
+    if (query.trim() === "") {
+      // Reset both lists if the search query is empty
+      setFiltered(data);
+      setFilteredService(dataService);
+      return;
+    }
+
+    // Filter Combo list
+    const filteredComboList = data.filter((item: Combo) =>
+      item.comboName.toLowerCase().includes(query.toLowerCase())
+    );
+
+    // Filter Service list (adjust the filter logic based on your data structure)
+    const filteredServiceList = dataService.filter((item: any) =>
+      item.serviceName.toLowerCase().includes(query.toLowerCase())
+    );
+
+    // Update state with filtered data
+    setFiltered(filteredComboList);
+    setFilteredService(filteredServiceList);
   };
 
+  // Fetch combo data on component mount
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await comboApi.getCombo();
-        setData(response);
+        const responseCombo = await comboApi.getCombo();
+        const responseService = await comboApi.getService();
+        setDataService(responseService);
+        setFilteredService(responseService);
+        setData(responseCombo);
+        setFiltered(responseCombo);
       } catch (err: any) {
         error(err.message);
       } finally {
@@ -90,7 +96,7 @@ const ServiceScreen = ({ navigation }: any) => {
                   inputStyle={style.inputSearch}
                 />
               </View>
-              <View className="">
+              <View>
                 <Button
                   className="w-full"
                   icon={<Ionicons name="filter" size={25} />}
@@ -100,47 +106,41 @@ const ServiceScreen = ({ navigation }: any) => {
               </View>
             </View>
           </View>
-          <View className="flex-1 py-2  min-h-screen h-screen">
-            <FlatList
-              numColumns={2}
-              data={data}
-              contentContainerStyle={{ paddingBottom: 100 }}
-              keyboardShouldPersistTaps="handled"
-              renderItem={({ item, index }) => {
-                const isSingleItemRow =
-                  index % 2 === 0 && index === data.length - 1;
-                return (
-                  <View
-                    className={
-                      isSingleItemRow
-                        ? "flex-1 justify-start"
-                        : "flex-1 justify-center"
-                    }
-                    style={{
-                      marginBottom: 10,
-                    }}
-                  >
-                    <ListServiceItem
-                      key={index}
-                      data={item}
-                      props={{
-                        containerStyle: {
-                          padding: 0,
-                          borderRadius: 10,
-                          overflow: "hidden",
-                          ...style.shadowStyle,
-                          ...style.container,
-                        },
-
-                      }}
-                      onPress={() =>
-                        navigation.navigate("ServiceDetail", { data: item })
-                      }
-                    />
-                  </View>
-                );
-              }}
-            />
+          {search.trim() !== "" && (
+            <Text className="p-2 text-base">
+              <Text className="font-bold">
+                {index === 0 ? filtered.length : filteredService.length}
+              </Text>{" "}
+              result
+              {(index === 0 ? filtered.length : filteredService.length) >
+                1 && <Text>s</Text>}
+            </Text>
+          )}
+          <View style={{ flex: 1 }}>
+            <Tab value={index} onChange={setIndex} style={{ flex: 1 }}>
+              <Tab.Item title="Combo" key={0} />
+              <Tab.Item title="Service" key={1} />
+            </Tab>
+            {index === 0 && (
+              <ScrollView
+                style={{ flex: 1 }}
+                contentContainerStyle={{ paddingBottom: 0 }}
+                showsVerticalScrollIndicator={false}
+                showsHorizontalScrollIndicator={false}
+              >
+                <ListCombo navigation={navigation} data={filtered} />
+              </ScrollView>
+            )}
+            {index === 1 && (
+              <ScrollView
+                style={{ flex: 1 }}
+                contentContainerStyle={{ paddingBottom: 0 }}
+                showsVerticalScrollIndicator={false}
+                showsHorizontalScrollIndicator={false}
+              >
+                <ListService navigation={navigation} data={filteredService} />
+              </ScrollView>
+            )}
           </View>
           <Toast />
         </View>
@@ -151,16 +151,7 @@ const ServiceScreen = ({ navigation }: any) => {
   );
 };
 
-const { width } = Dimensions.get("window");
-
 const style = StyleSheet.create({
-  container: {
-    width: width / 2 - 10,
-    height: "auto",
-    justifyContent: "center",
-    marginHorizontal: 5,
-    marginVertical: 5,
-  },
   containerSearch: {
     backgroundColor: "white",
     borderTopWidth: 0,
@@ -176,18 +167,6 @@ const style = StyleSheet.create({
   buttonStyle: {
     backgroundColor: "white",
     borderRadius: 20,
-  },
-  shadowStyle: {
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-
-    elevation: 8,
-    backgroundColor: "white",
   },
 });
 

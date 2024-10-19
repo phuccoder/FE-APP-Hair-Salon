@@ -1,4 +1,3 @@
-import { Service } from "@/model/Service";
 import { formatPrice } from "@/utils/formatPrice";
 import React from "react";
 import { Text, TouchableWithoutFeedback, View } from "react-native";
@@ -7,11 +6,11 @@ import { Card, CardProps } from "react-native-elements";
 interface ListServiceItemProps {
   props?: CardProps;
   cardImage?: any;
-  data: Service;
+  data: any;
   onPress?: any;
 }
 
-const ListServiceItem = ({
+const ListComboItem = ({
   props,
   cardImage,
   data,
@@ -28,9 +27,9 @@ const ListServiceItem = ({
           }}
         ></Card.Image>
         <View className="p-3">
-          <Text className="font-medium !text-base">{data.serviceName}</Text>
+          <Text className="font-medium !text-base">{data.comboName}</Text>
           <Text className="text-orange-600">
-            {formatPrice(data.servicePrice)}
+            {formatPrice(data.comboPrice)}
           </Text>
         </View>
       </Card>
@@ -38,4 +37,4 @@ const ListServiceItem = ({
   );
 };
 
-export default ListServiceItem;
+export default ListComboItem;
