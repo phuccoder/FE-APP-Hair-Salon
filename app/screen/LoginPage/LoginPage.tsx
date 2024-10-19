@@ -1,53 +1,59 @@
 import { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, ImageBackground, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+
+type RootStackParamList = {
+  Login: undefined;
+  Home: undefined;
+  RegisterPage: undefined;
+};
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Login'>>();
 
-//   useEffect (()=>{
-// GoogleSignin.configure ({
-//   webClientId: "YOUR_WEB_CLIENT_ID",
-//   offlineAccess: true,
-// });
+  //   useEffect(() => {
+//     GoogleSignin.configure({
+//       webClientId: 'YOUR_WEB_CLIENT_ID',
+//       offlineAccess: true,
+//     });
 //   }, []);
 
   const handleSubmit = () => {
     if (username && password) {
       Alert.alert('Login', `Username: ${username}\nPassword: ${password}`);
+      navigation.push('Home');
     } else {
       Alert.alert('Error', 'Please enter both username and password');
     }
   };
 
-  const handleGoogleLogin = async() => {
-    try{
+  const handleGoogleLogin = async () => {
+    try {
       
-    }
-    catch{
-      
+    } catch {
+     
     }
   };
+
   const handlePhoneLogin = () => {
     Alert.alert('Phone Login', 'Login with Phone Number is clicked');
-    
   };
+
   const handleRegister = () => {
     Alert.alert('Register', 'Redirecting to registration page');
-   
+    navigation.push('RegisterPage');
   };
-
-
   return (
     <ImageBackground
       source={{ uri: 'https://www.revealhairstudiorye.com/wp-content/uploads/2021/01/Untitled-design.jpg' }} 
       style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
     >
       <View className="bg-white p-6 rounded-lg w-4/5">
-        <Text className="text-2xl font-bold mb-4">Login</Text>
+        <Text className="text-2xl font-bold mb-4 text-center">Login</Text>
 
         <View className="w-full mb-4">
           <Text className="text-gray-700 mb-1">Username</Text>
@@ -90,6 +96,7 @@ export default function LoginPage() {
           />
           <Text className="text-white">Login with Google</Text>
         </TouchableOpacity>
+        
         <TouchableOpacity
           className="bg-emerald-400 px-4 py-2 rounded flex-row items-center justify-center" 
           style={{ marginTop: 5 }}
@@ -97,12 +104,14 @@ export default function LoginPage() {
         >
           <Text className="text-white">Login with Phone Number</Text>
         </TouchableOpacity>
-        <Text className="text-center mt-4" style={{ lineHeight: 24 }}>
-          Don't have an account?{' '}
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 16 }}>
+          <Text className="text-center" style={{ lineHeight: 24 }}>
+            Don't have an account?{' '}
+          </Text>
           <TouchableOpacity onPress={handleRegister}>
-            <Text className="text-blue-500" style={{ lineHeight: 20 }}>Register</Text>
+            <Text className="text-blue-500" style={{ lineHeight: 24 }}>Register</Text>
           </TouchableOpacity>
-        </Text>
+        </View>
       </View>
     </ImageBackground>
   );
