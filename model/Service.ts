@@ -9,5 +9,18 @@ export interface Combo {
   comboName: string;
   comboPrice: number;
   comboDescription: string;
-  services: any[];
+  comboDetails: ComboDetail[];
+}
+
+interface ComboDetail {
+  comboDetailID: number;
+  serviceID: number;
+  serviceName: string;
+  servicePrice: number;
+}
+
+export interface Service {
+  serviceID: number;
+  serviceName: string;
+  servicePrice: number;
 }
