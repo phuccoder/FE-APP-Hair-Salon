@@ -8,7 +8,7 @@ const api = axios.create({
 export const comboApi = {
   getCombo: async () => {
     try {
-      const response = await api.get("combos");
+      const response = await api.get("combos-management/get-all-combos");
       return response.data;
     } catch (error: any) {
       throw error.response.data;
@@ -16,7 +16,7 @@ export const comboApi = {
   },
   createCombo: async (data: ComboRequest) => {
     try {
-      const response = await api.post("combos/create-combo", data);
+      const response = await api.post("combos-management/create-combo", data);
       return response.data;
     } catch (error: any) {
       throw error.response.data;
@@ -24,10 +24,18 @@ export const comboApi = {
   },
   getDetailCombo: async (id: number) => {
     try {
-      const response = await api.get(`combos/get-combo-by-id/${id}`);
+      const response = await api.get(`combos-management/get-combo-by-id/${id}`);
       return response.data;
     } catch (error: any) {
       throw error.response.data;
     }
   },
+  getService: async () => {
+    try {
+      const response = await api.get("services-management");
+      return response.data;
+    } catch (error: any) {
+      throw error.response.data;
+    }
+  }
 };
