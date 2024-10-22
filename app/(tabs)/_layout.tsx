@@ -7,6 +7,7 @@ import { Ionicons as IoniconsType } from "@expo/vector-icons";
 import HomeStack from "../stack/HomeStack/HomeStack";
 import ServiceStack from "../stack/ServiceStack/ServiceStack";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
+import AppointmentStack from "../stack/AppointmentStack/AppointmentStack";
 
 function SettingsScreen() {
   return (
@@ -26,7 +27,7 @@ export default function Tabs() {
 
         return {
           tabBarIcon: ({ focused, color, size }) => {
-            let iconName: keyof typeof Ionicons.glyphMap | undefined; // Explicitly typing iconName
+            let iconName: keyof typeof Ionicons.glyphMap | undefined; 
 
             if (route.name === "HomeStack") {
               iconName = focused ? "home" : "home-outline";
@@ -34,6 +35,8 @@ export default function Tabs() {
               iconName = focused ? "person" : "person-outline";
             } else if (route.name === "ServiceStack") {
               iconName = focused ? "bag" : "bag-outline";
+            } else if (route.name === "AppointmentStack"){
+              iconName = focused ? "calendar" : "calendar-outline";
             }
 
             return iconName ? (
@@ -60,6 +63,11 @@ export default function Tabs() {
         component={ServiceStack}
       />
       <Tab.Screen name="Account" component={SettingsScreen} />
+      <Tab.Screen 
+        name="AppointmentStack" 
+        options={{ tabBarLabel: "Appointment" }}
+        component={AppointmentStack}      
+      />
     </Tab.Navigator>
   );
 }
