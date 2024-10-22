@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "../../screen/Home"; // Assuming your Home screen is here
 import { View } from "react-native";
 import { Button, Text } from "react-native-elements";
+import LoginPage from "@/app/screen/LoginPage/LoginPage";
 
 const Stack = createNativeStackNavigator();
 function DetailsScreen({ navigation }: any) {
@@ -17,6 +18,11 @@ function DetailsScreen({ navigation }: any) {
 export default function HomeStack() {
   return (
     <Stack.Navigator>
+      <Stack.Screen
+      name="LoginPage"
+      component={LoginPage}
+      options={{headerShown: false}}
+      />
       <Stack.Screen
         name="Home"
         component={HomeScreen}
