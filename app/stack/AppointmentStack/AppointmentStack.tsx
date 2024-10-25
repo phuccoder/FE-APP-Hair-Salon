@@ -14,7 +14,7 @@ const Stack = createStackNavigator();
 const AppointmentStack = () => {
   return (
     <Stack.Navigator initialRouteName="Services">
-      {/* <Stack.Screen name="Services" component={ServiceScreen} options={{ title: 'Select Services' }} /> */}
+      <Stack.Screen name="Services" component={ServiceScreen} options={{ title: 'Select Services' }} />
       <Stack.Screen name="Stylist" component={StylistScreen} options={{ title: 'Choose Stylist' }} />
       <Stack.Screen name="DateTimeSelection" component={DateTimeSelection} options={{ title: 'Select Date & Time' }} />
       <Stack.Screen name="PaymentSelection" component={PaymentSelection} options={{ title: 'Payment Method' }} />
