@@ -18,10 +18,16 @@ export interface SignInRequest {
     password: string;
 }
 
-export interface SignInResponse  {
+export interface SignInResponse {
     accessToken: string;
     refreshToken: string;
     accountID: number;
     accountName: string;
     role: string;
+}
+
+export interface TokenPayload {
+    sub: number;
+    iat: number;
+    exp: number;
 }

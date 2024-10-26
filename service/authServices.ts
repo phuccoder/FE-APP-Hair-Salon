@@ -1,8 +1,9 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import {ApplicationConstants} from "@/constants/ApplicationConstants";
-import {SignInRequest, SignInResponse, SignUpRequest, SuccessResponse} from "@/dtos/Authentication.dto";
 import {httpClient} from "@/config/authenticated.interceptor";
-import {from, mergeMap, Observable, tap} from "rxjs";
+import {ApplicationConstants} from "@/constants/ApplicationConstants";
+import {SignInRequest, SignInResponse, SignUpRequest, SuccessResponse, TokenPayload} from "@/dtos/Authentication.dto";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {jwtDecode} from "jwt-decode";
+import {from, mergeMap, Observable, of, tap, throwError} from "rxjs";
 
 const storeAccessTokenFn = async (token: string): Promise<void> => {
     try {
@@ -35,5 +36,20 @@ export const authServices = {
             url: `${ApplicationConstants.BASE_URL}/user/signup`,
             data: signUpRequest
         });
+    },
+    extractToken: (): Observable<TokenPayload> => {
+        return from(AsyncStorage.getItem(ApplicationConstants.ACCESS_TOKEN)).pipe(
+            mergeMap((token) => {
+                if (!token) {
+                    return throwError(() => new Error('No token found'));
+                }
+                try {
+                    const decodedToken = jwtDecode<TokenPayload>(token);
+                    return of(decodedToken);
+                } catch (error) {
+                    return throwError(() => new Error('Failed to decode token'));
+                }
+            })
+        );
     }
 };
