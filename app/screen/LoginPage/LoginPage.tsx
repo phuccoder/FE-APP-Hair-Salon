@@ -1,9 +1,20 @@
 import {useEffect, useRef, useState} from 'react';
-import {ActivityIndicator, Alert, Image, ImageBackground, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {
+    ActivityIndicator,
+    Alert,
+    Image,
+    ImageBackground,
+    Modal,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View
+} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {authServices} from "@/service/authServices";
 import {Subscription} from "rxjs";
+
 
 type RootStackParamList = {
     Login: undefined;
@@ -24,6 +35,8 @@ export default function LoginPage() {
     const [loading, setLoading] = useState(false);
     const [emailOrPhone, setEmailOrPhone] = useState('');
     const [password, setPassword] = useState('');
+    const [phoneModalVisible, setPhoneModalVisible] = useState(false);
+    const [phoneNumber, setPhoneNumber] = useState('');
     const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Login'>>();
 
     const onLogin = (): void => {
@@ -53,7 +66,16 @@ export default function LoginPage() {
     };
 
     const handlePhoneLogin = () => {
-        Alert.alert('Phone Login', 'Login with Phone Number is clicked');
+        setPhoneModalVisible(true);
+    };
+
+    const handlePhoneSubmit = () => {
+        setPhoneModalVisible(false);
+        // Implement your phone number login logic here.
+        // For demonstration, assume a successful login:
+        Alert.alert('Phone Login', `Logged in with phone number: ${phoneNumber}`);
+        setPhoneNumber('');
+        navigation.push('Home');
     };
 
     const handleRegister = () => {
@@ -130,6 +152,42 @@ export default function LoginPage() {
                     </TouchableOpacity>
                 </View>
             </View>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={phoneModalVisible}
+                onRequestClose={() => setPhoneModalVisible(false)}
+            >
+                <View style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: 'rgba(0, 0, 0, 0.5)'
+                }}>
+                    <View className="bg-white p-6 rounded-lg w-4/5">
+                        <Text className="text-2xl font-bold mb-4 text-center">Enter Phone Number</Text>
+                        <TextInput
+                            className="border border-gray-300 rounded px-4 py-2 mb-4"
+                            placeholder="Enter your phone number"
+                            keyboardType="phone-pad"
+                            value={phoneNumber}
+                            onChangeText={setPhoneNumber}
+                        />
+                        <TouchableOpacity
+                            className="bg-emerald-400 px-4 py-2 rounded"
+                            onPress={handlePhoneSubmit}
+                        >
+                            <Text className="text-white text-center">Login</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            className="mt-2"
+                            onPress={() => setPhoneModalVisible(false)}
+                        >
+                            <Text className="text-center text-blue-500">Cancel</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
         </ImageBackground>
     );
 }
