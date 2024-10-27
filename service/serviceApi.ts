@@ -33,7 +33,7 @@ export const comboApi = {
     },
     getService: async () => {
         try {
-            const response = await api.get("services-management");
+            const response = await api.get(`${ApplicationConstants.BASE_URL}/services-management`);
             return response.data;
         } catch (error: any) {
             throw error.response.data;

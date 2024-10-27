@@ -16,7 +16,7 @@ export const authServices = {
     signIn: (signInRequest: SignInRequest): Observable<SuccessResponse<SignInResponse>> => {
         return httpClient<SuccessResponse<SignInResponse>>({
             method: 'POST',
-            url: `${ApplicationConstants.BASE_URL}/user/signIn`,
+            url: `${ApplicationConstants.BASE_URL}/v1/user/signIn`,
             data: signInRequest
         }).pipe(
             mergeMap(response =>
@@ -32,7 +32,7 @@ export const authServices = {
     signUp: (signUpRequest: SignUpRequest): Observable<void> => {
         return httpClient<void>({
             method: 'POST',
-            url: `${ApplicationConstants.BASE_URL}/user/signup`,
+            url: `${ApplicationConstants.BASE_URL}/v1/user/signup`,
             data: signUpRequest
         });
     }

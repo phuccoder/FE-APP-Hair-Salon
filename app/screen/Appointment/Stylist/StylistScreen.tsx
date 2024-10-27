@@ -6,7 +6,7 @@ import { RootStackParamList } from '@/utils/navigation';
 
 type RouteParams = {
   params: {
-    selectedServices: any; // Replace 'any' with the appropriate type if known
+    selectedItem: Service | Combo; 
     };
   };
   
@@ -213,12 +213,13 @@ type RouteParams = {
   });
 
 import { Stylist } from 'c:/FPTUni/FALL2024_FPT/MMA301/Project/HairSalon/FE-APP-Hair-Salon/model/Stylist';
+import { Combo, Service } from '@/model/Service';
 
   const StylistScreen: React.FC = () => {
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
     const [selectedStylist, setSelectedStylist] = useState<Stylist | null>(null);
     const route = useRoute<RouteProp<RouteParams>>();
-    const { selectedServices } = route.params || { selectedServices: [] };
+    const { selectedItem } = route.params || { selectedItem: [] };
   
     const stylists: Stylist[] = [
       { id: 1, name: 'Sarah Johnson', specialty: 'Color Specialist', experience: 5 , rating: 4.5, available: true },
@@ -252,7 +253,7 @@ import { Stylist } from 'c:/FPTUni/FALL2024_FPT/MMA301/Project/HairSalon/FE-APP-
             style={[styles.button, !selectedStylist && styles.buttonDisabled]}
             disabled={!selectedStylist}
             onPress={() => navigation.navigate('DateTimeSelection', {
-              selectedServices,
+              selectedItem,
               selectedStylist
             })}
           >

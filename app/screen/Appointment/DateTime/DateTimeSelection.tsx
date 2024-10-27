@@ -5,7 +5,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 
 type RouteParams = {
     params: {
-        selectedServices: any;
+        selectedItem: any;
         selectedStylist: any;
     };
 };
@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
 
 type RootStackParamList = {
     PaymentSelection: {
-        selectedServices: any;
+        selectedItem: any;
         selectedStylist: any;
         appointmentDate: Date;
         appointmentTime: string | null;
@@ -226,7 +226,7 @@ const DateTimeSelection: React.FC = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
     const route = useRoute<RouteProp<RouteParams, 'params'>>();
-    const { selectedServices, selectedStylist } = route.params;
+    const { selectedItem, selectedStylist } = route.params;
     const [showDatePicker, setShowDatePicker] = useState(false);
 
     const timeSlots = [
@@ -279,7 +279,7 @@ const DateTimeSelection: React.FC = () => {
                     style={[styles.button, !selectedSlot && styles.buttonDisabled]}
                     disabled={!selectedSlot}
                     onPress={() => navigation.navigate('PaymentSelection', {
-                        selectedServices,
+                        selectedItem,
                         selectedStylist,
                         appointmentDate: selectedDate,
                         appointmentTime: selectedSlot

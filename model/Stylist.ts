@@ -1,8 +1,8 @@
 export interface Stylist {
     id: number;
     name: string;
-    experience: number; // in years
+    experience: number; 
     specialty: string;
-    rating: number; // average rating
+    rating: number; 
     available: boolean;
 }
