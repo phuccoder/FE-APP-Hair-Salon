@@ -6,6 +6,9 @@ import { View } from "react-native";
 import { Button, Text } from "react-native-elements";
 import LoginPage from "@/app/screen/LoginPage/LoginPage";
 import RegisterPage from '../../screen/RegisterPage/RegisterPage';
+import StylistScreen from "@/app/screen/Appointment/Stylist/StylistScreen";
+import ServiceDetail from "@/app/screen/Service/ServiceDetail/ServiceDetail";
+import ComboDetail from "@/app/screen/Service/ServiceDetail/ComboDetail";
 
 const Stack = createNativeStackNavigator();
 function DetailsScreen({ navigation }: any) {
@@ -38,6 +41,21 @@ export default function HomeStack() {
         name="Details"
         component={DetailsScreen}
         options={{ title: "Details" }}
+      />
+      <Stack.Screen
+        name="StylistScreen"
+        component={StylistScreen}
+        options={{ title: "Stylist" }}
+      />
+      <Stack.Screen
+        name="ServiceDetail"
+        component={ServiceDetail}
+        options={{ title: "ServiceDetail" }}
+      />
+      <Stack.Screen
+        name="ComboDetail"
+        component={ComboDetail}
+        options={{ title: "ComboDetail" }}
       />
     </Stack.Navigator>
   );

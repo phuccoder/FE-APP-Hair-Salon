@@ -5,6 +5,7 @@ import ServiceScreen from "@/app/screen/Service/ServiceList";
 import CustomHeader from "@/app/components/Header/CustomHeader";
 import ComboDetail from "@/app/screen/Service/ServiceDetail/ComboDetail";
 import ServiceDetail from "@/app/screen/Service/ServiceDetail/ServiceDetail";
+import HomeScreen from "@/app/screen/Home";
 
 const Stack = createNativeStackNavigator();
 export default function ServiceStack() {
@@ -28,6 +29,11 @@ export default function ServiceStack() {
         options={{
           header: () => <CustomHeader title="Service Detail" />, // Use custom header
         }}
+      />
+      <Stack.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );

@@ -1,12 +1,14 @@
-import {SuccessResponse} from "@/dtos/Authentication.dto";
-import {UserDetailsDTO} from "@/dtos/User.dto";
-import {userServices} from "@/service/userServices";
-import {useEffect, useRef, useState} from "react";
-import {FlatList, Image, ScrollView, Text, View} from "react-native";
-import {Button} from "react-native-elements";
-import {Subscription} from "rxjs";
+import { SuccessResponse } from "@/dtos/Authentication.dto";
+import { ServiceDTO } from "@/dtos/Service.dto";
+import { UserDetailsDTO } from "@/dtos/User.dto";
+import { hairServices } from "@/service/hairService";
+import { userServices } from "@/service/userServices";
+import { useEffect, useRef, useState } from "react";
+import { FlatList, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Button } from "react-native-elements";
+import { Subscription } from "rxjs";
 
-export default function HomeScreen({navigation}: any) {
+export default function HomeScreen({ navigation }: any) {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     // IMPORTANT: When subscribing to a subscription, we need to store the subscription in a ref to prevent memory leaks
@@ -19,6 +21,8 @@ export default function HomeScreen({navigation}: any) {
     }, []);
     // end of note
     const [user, setUser] = useState<UserDetailsDTO | null>(null);
+    const [services, setServices] = useState<ServiceDTO[]>([]);
+
     useEffect(() => {
         subscriptionsRef.current.push(
             userServices.getCurrentUser().subscribe({
@@ -32,31 +36,19 @@ export default function HomeScreen({navigation}: any) {
                 }
             })
         );
+        subscriptionsRef.current.push(
+            hairServices.getAllService().subscribe({
+                next: (services: ServiceDTO[]) => {
+                    setServices(services);
+                }
+            })
+        );
     }, []);
 
     const banners = [
         'https://freedesignfile.com/upload/2022/10/Sale-banner-beauty-salon-vector.jpg',
         'https://img.freepik.com/free-vector/flat-design-beauty-salon-banner_23-2150068560.jpg',
         'https://img.freepik.com/free-vector/hand-drawn-beauty-salon-facebook-cover_23-2149646009.jpg?semt=ais_hybrid'
-    ];
-
-    const services = [
-        {
-            name: 'Hair Cut',
-            logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdBljpp0aBj1UUcrYXpJT4OFi9rNKTLM5hpg&s'
-        },
-        {
-            name: 'Hair dying',
-            logo: 'https://static.vecteezy.com/system/resources/previews/010/411/253/non_2x/hair-paint-or-hair-polish-logo-design-silhouette-of-a-brush-comb-and-a-woman-s-face-with-a-soft-color-concept-vector.jpg'
-        },
-        {
-            name: 'Hair Care',
-            logo: 'https://cdn5.vectorstock.com/i/1000x1000/47/74/hair-styling-line-icon-concept-sign-outline-vector-29704774.jpg'
-        },
-        {
-            name: 'Hair Styling',
-            logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQE-x2b8rjXPLjD1GnCy1EUygt1-2UWE3rFjqDAtRCgHW5zHaJOwx8a0OWG1WgNzQu_6w4&usqp=CAU'
-        },
     ];
 
     const stylists = [
@@ -82,7 +74,7 @@ export default function HomeScreen({navigation}: any) {
 
     return (
         <ScrollView>
-            <View style={{flex: 1, backgroundColor: '#f4f4f4'}}>
+            <View style={{ flex: 1, backgroundColor: '#f4f4f4' }}>
                 <View style={{
                     flexDirection: 'row',
                     alignItems: 'center',
@@ -92,30 +84,30 @@ export default function HomeScreen({navigation}: any) {
                     borderBottomRightRadius: 20
                 }}>
                     <Image
-                        source={{uri: 'https://img.freepik.com/premium-vector/woman-hair-salon-logo-design-luxury-vector_487414-1667.jpg'}}
-                        style={{width: 40, height: 40, borderRadius: 20, marginRight: 20}}
+                        source={{ uri: 'https://img.freepik.com/premium-vector/woman-hair-salon-logo-design-luxury-vector_487414-1667.jpg' }}
+                        style={{ width: 40, height: 40, borderRadius: 20, marginRight: 20 }}
                     />
                     <View>
-                        <Text style={{color: 'black', fontSize: 20, fontWeight: '300'}}>
+                        <Text style={{ color: 'black', fontSize: 20, fontWeight: '300' }}>
                             {user ? `Hello ${user.accountName}` : 'Hello, anonymous!'}
                         </Text>
-                        <Text style={{color: 'black', fontSize: 20, fontWeight: '300'}}>
+                        <Text style={{ color: 'black', fontSize: 20, fontWeight: '300' }}>
                             Welcome to HairSalon!
                         </Text>
                     </View>
                 </View>
 
-                <View style={{marginVertical: 20}}>
+                <View style={{ marginVertical: 20 }}>
                     <FlatList
                         data={banners}
                         horizontal
                         showsHorizontalScrollIndicator={false}
                         keyExtractor={(item) => item}
-                        renderItem={({item}) => (
-                            <View style={{width: 300, height: 200, marginRight: 10}}>
+                        renderItem={({ item }) => (
+                            <View style={{ width: 300, height: 200, marginRight: 10 }}>
                                 <Image
-                                    source={{uri: item}}
-                                    style={{width: '100%', height: '100%', resizeMode: 'cover', borderRadius: 20}}
+                                    source={{ uri: item }}
+                                    style={{ width: '100%', height: '100%', resizeMode: 'cover', borderRadius: 20 }}
                                 />
                             </View>
                         )}
@@ -123,54 +115,141 @@ export default function HomeScreen({navigation}: any) {
 
                 </View>
 
-                <Text style={{fontSize: 20, fontWeight: 'bold', marginBottom: 10, padding: 10}}>My service</Text>
-                <View style={{padding: 20}}>
+                <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 10, padding: 10 }}>My service</Text>
+                <View style={{ padding: 20 }}>
                     <FlatList
                         data={services}
-                        renderItem={({item}) => (
-                            <View style={{width: '48%', alignItems: 'center', marginBottom: 10}}>
-                                <Image
-                                    source={{uri: item.logo}}
-                                    style={{width: 80, height: 80, borderRadius: 40}}
-                                />
-                                <Text style={{textAlign: 'center'}}>{item.name}</Text>
-                            </View>
+                        renderItem={({ item }) => (
+                            <TouchableOpacity
+                                style={{ width: '48%', alignItems: 'center', marginBottom: 10 }}
+                                onPress={() => {
+                                    console.log(`Clicked on ${item.serviceName}`);
+                                    navigation.navigate('ServiceDetail');
+                                }}
+                            >
+                                {/* <Image
+                                    source={{ uri: item.logo }}
+                                    style={{ width: 80, height: 80, borderRadius: 40 }}
+                                /> */}
+                                <Text style={{ textAlign: 'center' }}>{item.serviceName}</Text>
+                            </TouchableOpacity>
                         )}
-                        keyExtractor={(item) => item.name}
+                        keyExtractor={(item) => item.serviceName}
                         numColumns={2}
                     />
                 </View>
 
 
-                <Text style={{fontSize: 20, fontWeight: 'bold', marginBottom: 10, padding: 10}}>My Stylist</Text>
+                <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 10, padding: 10 }}>My Stylist</Text>
                 <FlatList
                     data={stylists}
                     horizontal
                     showsHorizontalScrollIndicator={false}
                     keyExtractor={(item) => item.name}
-                    renderItem={({item}) => (
-                        <View style={{width: 150, marginRight: 10, alignItems: 'center'}}>
-                            <Image
-                                source={{uri: item.image}}
-                                style={{width: 100, height: 100, borderRadius: 50}}
-                            />
-                            <Text style={{textAlign: 'center'}}>{item.name}</Text>
+                    renderItem={({ item }) => (
+                        <View style={{ width: 150, marginRight: 10, alignItems: 'center' }}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    console.log(`Clicked on ${item.name}`);
+                                    navigation.navigate('StylistScreen');
+                                }}
+                            >
+                                <Image
+                                    source={{ uri: item.image }}
+                                    style={{ width: 100, height: 100, borderRadius: 50 }}
+                                />
+                            </TouchableOpacity>
+                            <Text style={{ textAlign: 'center' }}>{item.name}</Text>
                             <Text>Kinh nghiệm: {item.experience}</Text>
                             <Text>Đánh giá: {item.rating}</Text>
                         </View>
                     )}
                 />
-                <View style={{alignItems: 'center'}}>
+
+
+                <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 10, padding: 10 }}>Combo</Text>
+                <View style={{ padding: 20, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+                    <TouchableOpacity
+                        style={{
+                            backgroundColor: '#ffdab9',
+                            padding: 15,
+                            borderRadius: 10,
+                            width: '48%',
+                            alignItems: 'center',
+                            marginBottom: 10,
+                        }}
+                        onPress={() => {
+                            console.log('Chọn Combo 1');
+                            navigation.navigate('ComboDetail');
+                        }}
+                    >
+                        <Text style={{ color: '#000', fontSize: 16 }}>Combo 1: Cắt & Gội</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={{
+                            backgroundColor: '#ffdab9',
+                            padding: 15,
+                            borderRadius: 10,
+                            width: '48%',
+                            alignItems: 'center',
+                            marginBottom: 10,
+                        }}
+                        onPress={() => {
+                            console.log('Chọn Combo 2');
+                            navigation.navigate('ComboDetail');
+                        }}
+                    >
+                        <Text style={{ color: '#000', fontSize: 16 }}>Combo 2: Uốn & Nhuộm</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={{
+                            backgroundColor: '#ffdab9',
+                            padding: 15,
+                            borderRadius: 10,
+                            width: '48%',
+                            alignItems: 'center',
+                            marginBottom: 10,
+                        }}
+                        onPress={() => {
+                            console.log('Chọn Combo 3');
+                            navigation.navigate('ComboDetail');
+                        }}
+                    >
+                        <Text style={{ color: '#000', fontSize: 16 }}>Combo 3: Duỗi & Dưỡng</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={{
+                            backgroundColor: '#ffdab9',
+                            padding: 15,
+                            borderRadius: 10,
+                            width: '48%',
+                            alignItems: 'center',
+                            marginBottom: 10,
+                        }}
+                        onPress={() => {
+                            console.log('Chọn Combo 4');
+                            navigation.navigate('ComboDetail');
+                        }}
+                    >
+                        <Text style={{ color: '#000', fontSize: 16 }}>Combo 4: Nhuộm & Cắt</Text>
+                    </TouchableOpacity>
+                </View>
+
+
+                <View style={{ alignItems: 'center' }}>
                     <Button
                         title="Đặt Lịch Ngay"
                         buttonStyle={{
-                            backgroundColor: '#808080',
+                            backgroundColor: '#f08080',
                             marginTop: 20,
                             marginBottom: 20,
                             borderRadius: 5,
                             justifyContent: 'center'
                         }}
-                        containerStyle={{width: 150}}
+                        containerStyle={{ width: 150 }}
                     />
                 </View>
             </View>
