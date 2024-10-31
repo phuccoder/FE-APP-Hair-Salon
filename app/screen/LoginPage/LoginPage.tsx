@@ -15,7 +15,6 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {authServices} from "@/service/authServices";
 import {Subscription} from "rxjs";
 
-
 type RootStackParamList = {
     Login: undefined;
     Home: undefined;
@@ -23,21 +22,38 @@ type RootStackParamList = {
 };
 
 export default function LoginPage() {
-    // IMPORTANT: When subscribing to a subscription, we need to store the subscription in a ref to prevent memory leaks
     const subscriptionsRef = useRef<Subscription[]>([]);
-    useEffect(() => {
-        return (): void => {
-            subscriptionsRef.current.forEach((subscription: Subscription): void => subscription.unsubscribe());
-            subscriptionsRef.current = [];
-        };
-    }, []);
-    // end of note
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true); // Initialize loading state to true
     const [emailOrPhone, setEmailOrPhone] = useState('');
     const [password, setPassword] = useState('');
     const [phoneModalVisible, setPhoneModalVisible] = useState(false);
     const [phoneNumber, setPhoneNumber] = useState('');
     const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Login'>>();
+
+    useEffect(() => {
+        const checkToken = () => {
+            subscriptionsRef.current.push(
+                authServices.extractToken().subscribe({
+                    next: (token) => {
+                        if (token) {
+                            navigation.replace('Home');
+                        } else {
+                            setLoading(false); // Set loading to false if no token is found
+                        }
+                    },
+                    error: () => {
+                        console.log('No valid token found, stay on login page');
+                        setLoading(false); // Set loading to false if an error occurs
+                    }
+                })
+            );
+        };
+        checkToken();
+        return (): void => {
+            subscriptionsRef.current.forEach((subscription: Subscription): void => subscription.unsubscribe());
+            subscriptionsRef.current = [];
+        };
+    }, [navigation]);
 
     const onLogin = (): void => {
         setLoading(true);
@@ -71,8 +87,6 @@ export default function LoginPage() {
 
     const handlePhoneSubmit = () => {
         setPhoneModalVisible(false);
-        // Implement your phone number login logic here.
-        // For demonstration, assume a successful login:
         Alert.alert('Phone Login', `Logged in with phone number: ${phoneNumber}`);
         setPhoneNumber('');
         navigation.push('Home');
@@ -81,6 +95,15 @@ export default function LoginPage() {
     const handleRegister = () => {
         navigation.push('RegisterPage');
     };
+
+    if (loading) {
+        return (
+            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                <ActivityIndicator size="large" color="#0000ff"/>
+            </View>
+        );
+    }
+
     return (
         <ImageBackground
             source={{uri: 'https://www.revealhairstudiorye.com/wp-content/uploads/2021/01/Untitled-design.jpg'}}
