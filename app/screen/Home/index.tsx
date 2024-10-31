@@ -11,6 +11,7 @@ import {Button} from "react-native-elements";
 import {Subscription} from "rxjs";
 import {hairComboServices} from "@/service/hairComboServices";
 import {ComboDTO} from "@/dtos/Combo.dto";
+import {authServices} from "@/service/authServices";
 
 export default function HomeScreen({navigation}: any) {
     const [loading, setLoading] = useState<boolean>(true);
@@ -23,46 +24,65 @@ export default function HomeScreen({navigation}: any) {
     const [combos, setCombos] = useState<ComboDTO[]>([]);
 
     useEffect(() => {
-        subscriptionsRef.current.push(
-            userServices.getCurrentUser().subscribe({
-                next: (response: SuccessResponse<UserDetailsDTO>) => {
-                    setUser(response.data);
-                    setLoading(false);
-                },
-                error: () => {
-                    setError("Failed to load user details");
-                    setLoading(false);
-                },
-            })
-        );
-        subscriptionsRef.current.push(
-            hairServices.getAllHairServices().subscribe({
-                next: (services: ServiceDTO[]) => {
-                    setServices(services);
-                },
-            })
-        );
-        subscriptionsRef.current.push(
-            hairStylistServices.getAllStylist().subscribe({
-                next: (response: SuccessResponse<StylistDTO[]>) => {
-                    setStylists(response.data);
-                },
-            })
-        );
-        subscriptionsRef.current.push(
-            hairComboServices.getAllCombos().subscribe({
-                    next: (combos: ComboDTO[]) => {
-                        setCombos(combos)
+        const checkAuthenticationAndLoadData = () => {
+            subscriptionsRef.current.push(
+                authServices.extractToken().subscribe({
+                    next: (token) => {
+                        if (token) {
+                            // User is authenticated, proceed with API calls
+                            subscriptionsRef.current.push(
+                                userServices.getCurrentUser().subscribe({
+                                    next: (response: SuccessResponse<UserDetailsDTO>) => {
+                                        setUser(response.data);
+                                        setLoading(false);
+                                    },
+                                    error: () => {
+                                        setError("Failed to load user details");
+                                        setLoading(false);
+                                    },
+                                })
+                            );
+                            subscriptionsRef.current.push(
+                                hairServices.getAllHairServices().subscribe({
+                                    next: (services: ServiceDTO[]) => {
+                                        setServices(services);
+                                    },
+                                })
+                            );
+                            subscriptionsRef.current.push(
+                                hairStylistServices.getAllStylist().subscribe({
+                                    next: (response: SuccessResponse<StylistDTO[]>) => {
+                                        setStylists(response.data);
+                                    },
+                                })
+                            );
+                            subscriptionsRef.current.push(
+                                hairComboServices.getAllCombos().subscribe({
+                                    next: (combos: ComboDTO[]) => {
+                                        setCombos(combos);
+                                    },
+                                })
+                            );
+                        } else {
+                            // No valid token, navigate to login page
+                            navigation.replace('LoginPage');
+                        }
+                    },
+                    error: () => {
+                        console.log('No valid token found, navigate to login page');
+                        navigation.replace('LoginPage');
                     }
-                }
-            )
-        );
+                })
+            );
+        };
+
+        checkAuthenticationAndLoadData();
 
         return () => {
             subscriptionsRef.current.forEach((subscription) => subscription.unsubscribe());
             subscriptionsRef.current = [];
         };
-    }, []);
+    }, [navigation]);
 
     const banners = [
         "https://freedesignfile.com/upload/2022/10/Sale-banner-beauty-salon-vector.jpg",
@@ -111,6 +131,19 @@ export default function HomeScreen({navigation}: any) {
         </View>
     );
 
+    const handleLogout = () => {
+        subscriptionsRef.current.push(
+            authServices.logout().subscribe({
+                next: () => {
+                    navigation.replace('LoginPage');
+                },
+                error: () => {
+                    console.error('Failed to logout');
+                }
+            })
+        );
+    };
+
     return (
         <FlatList
             data={[1]} // Chỉ cần một phần tử để có thể cuộn
@@ -138,6 +171,15 @@ export default function HomeScreen({navigation}: any) {
                                 Welcome to HairSalon!
                             </Text>
                         </View>
+                        <Button
+                            title="Logout"
+                            buttonStyle={{
+                                backgroundColor: "#f08080",
+                                marginLeft: 'auto',
+                                borderRadius: 5,
+                            }}
+                            onPress={handleLogout}
+                        />
                     </View>
 
                     {/* Banner */}
@@ -204,7 +246,6 @@ export default function HomeScreen({navigation}: any) {
                             }}
                             containerStyle={{width: 150}}
                         />
-
                     </View>
                 </View>
             )}
