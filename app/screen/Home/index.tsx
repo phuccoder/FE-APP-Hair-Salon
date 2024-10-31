@@ -9,6 +9,8 @@ import {useEffect, useRef, useState} from "react";
 import {FlatList, Image, Text, TouchableOpacity, View} from "react-native";
 import {Button} from "react-native-elements";
 import {Subscription} from "rxjs";
+import {hairComboServices} from "@/service/hairComboServices";
+import {ComboDTO} from "@/dtos/Combo.dto";
 
 export default function HomeScreen({navigation}: any) {
     const [loading, setLoading] = useState<boolean>(true);
@@ -18,6 +20,7 @@ export default function HomeScreen({navigation}: any) {
     const [user, setUser] = useState<UserDetailsDTO | null>(null);
     const [services, setServices] = useState<ServiceDTO[]>([]);
     const [stylists, setStylists] = useState<StylistDTO[]>([]);
+    const [combos, setCombos] = useState<ComboDTO[]>([]);
 
     useEffect(() => {
         subscriptionsRef.current.push(
@@ -45,6 +48,14 @@ export default function HomeScreen({navigation}: any) {
                     setStylists(response.data);
                 },
             })
+        );
+        subscriptionsRef.current.push(
+            hairComboServices.getAllCombos().subscribe({
+                    next: (combos: ComboDTO[]) => {
+                        setCombos(combos)
+                    }
+                }
+            )
         );
 
         return () => {
@@ -98,22 +109,6 @@ export default function HomeScreen({navigation}: any) {
             <Text>Phone Number: {item.stylistPhone}</Text>
             <Text>Info: {item.stylistInfor}</Text>
         </View>
-    );
-
-    const renderCombo = ({item}: { item: string }) => (
-        <TouchableOpacity
-            style={{
-                backgroundColor: "#ffdab9",
-                padding: 15,
-                borderRadius: 10,
-                width: "48%",
-                alignItems: "center",
-                marginBottom: 10,
-            }}
-            onPress={() => navigation.navigate("ComboDetail")}
-        >
-            <Text style={{color: "#000", fontSize: 16}}>{item}</Text>
-        </TouchableOpacity>
     );
 
     return (
@@ -177,9 +172,23 @@ export default function HomeScreen({navigation}: any) {
                     {/* Combos */}
                     <Text style={{fontSize: 20, fontWeight: "bold", marginBottom: 10, padding: 10}}>Combo</Text>
                     <FlatList
-                        data={["Combo 1: Cắt & Gội", "Combo 2: Uốn & Nhuộm", "Combo 3: Duỗi & Dưỡng", "Combo 4: Nhuộm & Cắt"]}
-                        renderItem={renderCombo}
-                        keyExtractor={(item, index) => index.toString()}
+                        data={combos}
+                        renderItem={({ item }) => (
+                            <TouchableOpacity
+                                style={{
+                                    backgroundColor: "#ffdab9",
+                                    padding: 15,
+                                    borderRadius: 10,
+                                    width: "48%",
+                                    alignItems: "center",
+                                    marginBottom: 10,
+                                }}
+                                onPress={() => navigation.navigate("ComboDetail")}
+                            >
+                                <Text style={{color: "#000", fontSize: 16}}>{item.comboName}</Text>
+                            </TouchableOpacity>
+                        )}
+                        keyExtractor={(item) => item.comboID.toString()}
                         numColumns={2}
                     />
 
@@ -195,6 +204,7 @@ export default function HomeScreen({navigation}: any) {
                             }}
                             containerStyle={{width: 150}}
                         />
+
                     </View>
                 </View>
             )}
