@@ -13,6 +13,14 @@ const storeAccessTokenFn = async (token: string): Promise<void> => {
     }
 };
 
+const removeAccessTokenFn = async (): Promise<void> => {
+    try {
+        await AsyncStorage.removeItem(ApplicationConstants.ACCESS_TOKEN);
+    } catch (error) {
+        console.error('Failed to remove token', error);
+    }
+};
+
 export const authServices = {
     signIn: (signInRequest: SignInRequest): Observable<SuccessResponse<SignInResponse>> => {
         return httpClient<SuccessResponse<SignInResponse>>({
@@ -49,6 +57,13 @@ export const authServices = {
                 } catch (error) {
                     return throwError(() => new Error('Failed to decode token'));
                 }
+            })
+        );
+    },
+    logout: (): Observable<void> => {
+        return from(removeAccessTokenFn()).pipe(
+            tap((): void => {
+                console.log('Access token removed successfully');
             })
         );
     }
