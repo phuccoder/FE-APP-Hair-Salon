@@ -12,6 +12,7 @@ import {Subscription} from "rxjs";
 import {hairComboServices} from "@/service/hairComboServices";
 import {ComboDTO} from "@/dtos/Combo.dto";
 import {authServices} from "@/service/authServices";
+import { Icon } from "react-native-elements";
 
 export default function HomeScreen({navigation}: any) {
     const [loading, setLoading] = useState<boolean>(true);
@@ -164,22 +165,34 @@ export default function HomeScreen({navigation}: any) {
                             style={{width: 40, height: 40, borderRadius: 20, marginRight: 20}}
                         />
                         <View>
-                            <Text style={{color: "black", fontSize: 20, fontWeight: "300"}}>
+                            <Text style={{color: "black", fontSize: 16, fontWeight: "300"}}>
                                 {user ? `Hello ${user.accountName}` : "Hello, anonymous!"}
                             </Text>
-                            <Text style={{color: "black", fontSize: 20, fontWeight: "300"}}>
+                            <Text style={{color: "black", fontSize: 16, fontWeight: "300"}}>
                                 Welcome to HairSalon!
                             </Text>
                         </View>
-                        <Button
-                            title="Logout"
-                            buttonStyle={{
-                                backgroundColor: "#f08080",
-                                marginLeft: 'auto',
-                                borderRadius: 5,
-                            }}
-                            onPress={handleLogout}
-                        />
+                        <View style={{ marginLeft: 'auto' }}>
+                            <TouchableOpacity onPress={handleLogout}>
+                                <Icon
+                                    name="logout"
+                                    type="material-community"
+                                    color="#ff4d4d"
+                                    size={28}
+                                    containerStyle={{
+                                        backgroundColor: "#fff",
+                                        padding: 10,
+                                        borderRadius: 20,
+                                        shadowColor: "#000",
+                                        shadowOffset: { width: 0, height: 2 },
+                                        shadowOpacity: 0.2,
+                                        shadowRadius: 4,
+                                        elevation: 5,
+                                    }}
+                                />
+                            </TouchableOpacity>
+                        </View>
+
                     </View>
 
                     {/* Banner */}
