@@ -134,8 +134,8 @@ export default function LoginPage() {
                 </View>
 
                 <TouchableOpacity
-                    style={{marginBottom: 20}}
-                    className="bg-emerald-400 px-4 py-2 rounded"
+                    style={{ backgroundColor: '#ff4d4d', marginBottom: 20 }}
+                    className="px-4 py-2 rounded"
                     onPress={onLogin}
                     disabled={loading}
                 >
@@ -148,20 +148,10 @@ export default function LoginPage() {
 
                 <Text className="text-center mb-4">-----Or login with-----</Text>
 
-                <TouchableOpacity
-                    className="bg-emerald-400 px-4 py-2 rounded flex-row items-center justify-center"
-                    onPress={handleGoogleLogin}
-                >
-                    <Image
-                        source={{uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/768px-Google_%22G%22_logo.svg.png'}}
-                        style={{width: 20, height: 20, marginRight: 8}}
-                    />
-                    <Text className="text-white">Login with Google</Text>
-                </TouchableOpacity>
 
                 <TouchableOpacity
-                    className="bg-emerald-400 px-4 py-2 rounded flex-row items-center justify-center"
-                    style={{marginTop: 5}}
+                    className=" px-4 py-2 rounded flex-row items-center justify-center"
+                    style={{backgroundColor: '#ff4d4d',marginTop: 5}}
                     onPress={handlePhoneLogin}
                 >
                     <Text className="text-white">Login with Phone Number</Text>
@@ -171,7 +161,7 @@ export default function LoginPage() {
                         Don't have an account?{' '}
                     </Text>
                     <TouchableOpacity onPress={handleRegister}>
-                        <Text className="text-blue-500" style={{lineHeight: 24}}>Register</Text>
+                        <Text style={{ color: '#ff4d4d', lineHeight: 24 }}>Register</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -197,7 +187,8 @@ export default function LoginPage() {
                             onChangeText={setPhoneNumber}
                         />
                         <TouchableOpacity
-                            className="bg-emerald-400 px-4 py-2 rounded"
+                            style={{backgroundColor: '#ff4d4d'}}
+                            className=" px-4 py-2 rounded"
                             onPress={handlePhoneSubmit}
                         >
                             <Text className="text-white text-center">Login</Text>
