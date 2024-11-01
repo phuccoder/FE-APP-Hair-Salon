@@ -1,14 +1,13 @@
 // HomeStack.tsx
-import * as React from "react";
+import StylistScreen from "@/app/screen/Appointment/Stylist/StylistScreen";
+import ComboDetail from "@/app/screen/Service/ServiceDetail/ComboDetail";
+import ServiceDetail from "@/app/screen/Service/ServiceDetail/ServiceDetail";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import HomeScreen from "../../screen/Home"; // Assuming your Home screen is here
+import * as React from "react";
 import { View } from "react-native";
 import { Button, Text } from "react-native-elements";
+import HomeScreen from "../../screen/Home"; // Assuming your Home screen is here
 import LoginPage from "@/app/screen/LoginPage/LoginPage";
-import RegisterPage from '../../screen/RegisterPage/RegisterPage';
-import StylistScreen from "@/app/screen/Appointment/Stylist/StylistScreen";
-import ServiceDetail from "@/app/screen/Service/ServiceDetail/ServiceDetail";
-import ComboDetail from "@/app/screen/Service/ServiceDetail/ComboDetail";
 
 const Stack = createNativeStackNavigator();
 function DetailsScreen({ navigation }: any) {
@@ -22,16 +21,6 @@ function DetailsScreen({ navigation }: any) {
 export default function HomeStack() {
   return (
     <Stack.Navigator>
-      <Stack.Screen
-      name="LoginPage"
-      component={LoginPage}
-      options={{headerShown: false}}
-      />
-       <Stack.Screen
-      name="RegisterPage"
-      component={RegisterPage}
-      options={{headerShown: false}}
-      />
       <Stack.Screen
         name="Home"
         component={HomeScreen}
@@ -56,6 +45,11 @@ export default function HomeStack() {
         name="ComboDetail"
         component={ComboDetail}
         options={{ title: "ComboDetail" }}
+      />
+      <Stack.Screen
+        name="LoginPage"
+        component={LoginPage}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );

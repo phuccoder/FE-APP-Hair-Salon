@@ -112,19 +112,41 @@ const ServiceScreen = ({ navigation }: any) => {
                 {index === 0 ? filtered.length : filteredService.length}
               </Text>{" "}
               result
-              {(index === 0 ? filtered.length : filteredService.length) >
-                1 && <Text>s</Text>}
+              {(index === 0 ? filtered.length : filteredService.length) > 1 && (
+                <Text>s</Text>
+              )}
             </Text>
           )}
           <View style={{ flex: 1 }}>
-            <Tab value={index} onChange={setIndex} style={{ flex: 1 }}>
-              <Tab.Item title="Combo" key={0} />
-              <Tab.Item title="Service" key={1} />
+            <Tab
+              indicatorStyle={{ backgroundColor: "blue", height: 2 }}
+              value={index}
+              onChange={setIndex}
+              style={{ flex: 1 }}
+            >
+              <Tab.Item
+                titleStyle={[
+                  style.title,
+                  index === 0 ? style.focused : style.unfocused,
+                ]}
+                containerStyle={index === 0 && style.backgroundFocus}
+                title="Combo"
+                key={0}
+              />
+              <Tab.Item
+                titleStyle={[
+                  style.title,
+                  index === 1 ? style.focused : style.unfocused,
+                ]}
+                containerStyle={index === 1 && style.backgroundFocus}
+                title="Service"
+                key={1}
+              />
             </Tab>
             {index === 0 && (
               <ScrollView
                 style={{ flex: 1 }}
-                contentContainerStyle={{ paddingBottom: 0 }}
+                contentContainerStyle={{ paddingVertical: 10 }}
                 showsVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false}
               >
@@ -133,8 +155,8 @@ const ServiceScreen = ({ navigation }: any) => {
             )}
             {index === 1 && (
               <ScrollView
-                style={{ flex: 1 }}
-                contentContainerStyle={{ paddingBottom: 0 }}
+                style={{ flex: 1}}
+                contentContainerStyle={{ paddingVertical: 10 }}
                 showsVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false}
               >
@@ -167,6 +189,19 @@ const style = StyleSheet.create({
   buttonStyle: {
     backgroundColor: "white",
     borderRadius: 20,
+  },
+  focused: {
+    color: "blue",
+  },
+  unfocused: {
+    color: "gray",
+  },
+  title: {
+    fontSize: 13,
+  },
+  backgroundFocus: {
+    backgroundColor: "rgba(45, 85, 255, 0.2)",
+    borderBottomColor: "rgba(45, 85, 255, 0.2)",
   },
 });
 
