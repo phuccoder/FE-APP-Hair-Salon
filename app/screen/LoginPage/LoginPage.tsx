@@ -20,6 +20,7 @@ type RootStackParamList = {
     Login: undefined;
     Home: undefined;
     RegisterPage: undefined;
+    "(tabs)": undefined;
 };
 
 export default function LoginPage() {
@@ -52,7 +53,7 @@ export default function LoginPage() {
                         setEmailOrPhone('');
                         setPassword('');
                         setLoading(false);
-                        navigation.push('Home');
+                        navigation.push('(tabs)');
                     },
                     error: (): void => {
                         setLoading(false);
