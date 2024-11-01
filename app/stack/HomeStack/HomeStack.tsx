@@ -7,6 +7,7 @@ import * as React from "react";
 import { View } from "react-native";
 import { Button, Text } from "react-native-elements";
 import HomeScreen from "../../screen/Home"; // Assuming your Home screen is here
+import LoginPage from "@/app/screen/LoginPage/LoginPage";
 
 const Stack = createNativeStackNavigator();
 function DetailsScreen({ navigation }: any) {
@@ -44,6 +45,11 @@ export default function HomeStack() {
         name="ComboDetail"
         component={ComboDetail}
         options={{ title: "ComboDetail" }}
+      />
+      <Stack.Screen
+        name="LoginPage"
+        component={LoginPage}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );

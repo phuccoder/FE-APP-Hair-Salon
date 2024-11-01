@@ -37,7 +37,7 @@ export default function LoginPage() {
                 authServices.extractToken().subscribe({
                     next: (token) => {
                         if (token) {
-                            navigation.replace('Home');
+                            navigation.replace('(tabs)');
                         } else {
                             setLoading(false); // Set loading to false if no token is found
                         }
