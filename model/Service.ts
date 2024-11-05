@@ -17,6 +17,7 @@ interface ComboDetail {
   serviceID: number;
   serviceName: string;
   servicePrice: number;
+  serviceImage: string;
 }
 
 export interface Service {
