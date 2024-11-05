@@ -106,17 +106,6 @@ const ServiceScreen = ({ navigation }: any) => {
               </View>
             </View>
           </View>
-          {search.trim() !== "" && (
-            <Text className="p-2 text-base">
-              <Text className="font-bold">
-                {index === 0 ? filtered.length : filteredService.length}
-              </Text>{" "}
-              result
-              {(index === 0 ? filtered.length : filteredService.length) > 1 && (
-                <Text>s</Text>
-              )}
-            </Text>
-          )}
           <View style={{ flex: 1 }}>
             <Tab
               indicatorStyle={{ backgroundColor: "blue", height: 2 }}
@@ -143,6 +132,16 @@ const ServiceScreen = ({ navigation }: any) => {
                 key={1}
               />
             </Tab>
+            {search.trim() !== "" && (
+              <Text className="p-2 text-base">
+                <Text className="font-bold">
+                  {index === 0 ? filtered.length : filteredService.length}
+                </Text>{" "}
+                result
+                {(index === 0 ? filtered.length : filteredService.length) >
+                  1 && <Text>s</Text>}
+              </Text>
+            )}
             {index === 0 && (
               <ScrollView
                 style={{ flex: 1 }}
@@ -155,7 +154,7 @@ const ServiceScreen = ({ navigation }: any) => {
             )}
             {index === 1 && (
               <ScrollView
-                style={{ flex: 1}}
+                style={{ flex: 1 }}
                 contentContainerStyle={{ paddingVertical: 10 }}
                 showsVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false}

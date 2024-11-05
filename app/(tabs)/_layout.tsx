@@ -27,7 +27,7 @@ export default function Tabs() {
 
         return {
           tabBarIcon: ({ focused, color, size }) => {
-            let iconName: keyof typeof Ionicons.glyphMap | undefined; 
+            let iconName: keyof typeof Ionicons.glyphMap | undefined;
 
             if (route.name === "HomeStack") {
               iconName = focused ? "home" : "home-outline";
@@ -35,7 +35,7 @@ export default function Tabs() {
               iconName = focused ? "person" : "person-outline";
             } else if (route.name === "ServiceStack") {
               iconName = focused ? "bag" : "bag-outline";
-            } else if (route.name === "AppointmentStack"){
+            } else if (route.name === "AppointmentStack") {
               iconName = focused ? "calendar" : "calendar-outline";
             }
 
@@ -46,11 +46,13 @@ export default function Tabs() {
           unmountOnBlur: true,
           headerShown: false,
           tabBarStyle: {
-            display: routeName === "ServiceDetail" ? "none" : "flex",
+            display:
+              routeName === "ServiceDetail" || routeName === "ComboDetail"
+                ? "none"
+                : "flex",
           },
         };
       }}
-      
     >
       <Tab.Screen
         name="HomeStack"
@@ -63,10 +65,10 @@ export default function Tabs() {
         component={ServiceStack}
       />
       <Tab.Screen name="Account" component={SettingsScreen} />
-      <Tab.Screen 
-        name="AppointmentStack" 
+      <Tab.Screen
+        name="AppointmentStack"
         options={{ tabBarLabel: "Appointment" }}
-        component={AppointmentStack}      
+        component={AppointmentStack}
       />
     </Tab.Navigator>
   );

@@ -24,7 +24,7 @@ const ListServiceItem = ({
           resizeMode="contain"
           {...cardImage}
           source={{
-            uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQL1bx5wd1PTncyaHk8dNGV0i5I4Bmr3T6LHQ&s",
+            uri: data.serviceImage,
           }}
         ></Card.Image>
         <View className="p-3">
