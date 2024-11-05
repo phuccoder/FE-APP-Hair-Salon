@@ -14,7 +14,7 @@ const ListCombo = ({ data, navigation }: ListComboProps) => {
       numColumns={2}
       scrollEnabled={false}
       data={data}
-      contentContainerStyle={{ flex: 1 }}
+      contentContainerStyle={{ flex: 1, gap: 5 }}
       keyboardShouldPersistTaps="handled"
       renderItem={({ item, index }) => {
         const isSingleItemRow =
