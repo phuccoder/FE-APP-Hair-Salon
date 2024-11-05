@@ -1,5 +1,15 @@
 import {useEffect, useRef, useState} from 'react';
-import {ActivityIndicator, Alert, Image, ImageBackground, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {
+    ActivityIndicator,
+    Alert,
+    Image,
+    ImageBackground,
+    Modal,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View
+} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {authServices} from "@/service/authServices";
@@ -12,19 +22,38 @@ type RootStackParamList = {
 };
 
 export default function LoginPage() {
-    // IMPORTANT: When subscribing to a subscription, we need to store the subscription in a ref to prevent memory leaks
     const subscriptionsRef = useRef<Subscription[]>([]);
+    const [loading, setLoading] = useState(true); // Initialize loading state to true
+    const [emailOrPhone, setEmailOrPhone] = useState('');
+    const [password, setPassword] = useState('');
+    const [phoneModalVisible, setPhoneModalVisible] = useState(false);
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Login'>>();
+
     useEffect(() => {
+        const checkToken = () => {
+            subscriptionsRef.current.push(
+                authServices.extractToken().subscribe({
+                    next: (token) => {
+                        if (token) {
+                            navigation.replace('Home');
+                        } else {
+                            setLoading(false); // Set loading to false if no token is found
+                        }
+                    },
+                    error: () => {
+                        console.log('No valid token found, stay on login page');
+                        setLoading(false); // Set loading to false if an error occurs
+                    }
+                })
+            );
+        };
+        checkToken();
         return (): void => {
             subscriptionsRef.current.forEach((subscription: Subscription): void => subscription.unsubscribe());
             subscriptionsRef.current = [];
         };
-    }, []);
-    // end of note
-    const [loading, setLoading] = useState(false);
-    const [emailOrPhone, setEmailOrPhone] = useState('');
-    const [password, setPassword] = useState('');
-    const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Login'>>();
+    }, [navigation]);
 
     const onLogin = (): void => {
         setLoading(true);
@@ -53,12 +82,28 @@ export default function LoginPage() {
     };
 
     const handlePhoneLogin = () => {
-        Alert.alert('Phone Login', 'Login with Phone Number is clicked');
+        setPhoneModalVisible(true);
+    };
+
+    const handlePhoneSubmit = () => {
+        setPhoneModalVisible(false);
+        Alert.alert('Phone Login', `Logged in with phone number: ${phoneNumber}`);
+        setPhoneNumber('');
+        navigation.push('Home');
     };
 
     const handleRegister = () => {
         navigation.push('RegisterPage');
     };
+
+    if (loading) {
+        return (
+            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                <ActivityIndicator size="large" color="#0000ff"/>
+            </View>
+        );
+    }
+
     return (
         <ImageBackground
             source={{uri: 'https://www.revealhairstudiorye.com/wp-content/uploads/2021/01/Untitled-design.jpg'}}
@@ -89,8 +134,8 @@ export default function LoginPage() {
                 </View>
 
                 <TouchableOpacity
-                    style={{marginBottom: 20}}
-                    className="bg-emerald-400 px-4 py-2 rounded"
+                    style={{ backgroundColor: '#ff4d4d', marginBottom: 20 }}
+                    className="px-4 py-2 rounded"
                     onPress={onLogin}
                     disabled={loading}
                 >
@@ -103,20 +148,10 @@ export default function LoginPage() {
 
                 <Text className="text-center mb-4">-----Or login with-----</Text>
 
-                <TouchableOpacity
-                    className="bg-emerald-400 px-4 py-2 rounded flex-row items-center justify-center"
-                    onPress={handleGoogleLogin}
-                >
-                    <Image
-                        source={{uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/768px-Google_%22G%22_logo.svg.png'}}
-                        style={{width: 20, height: 20, marginRight: 8}}
-                    />
-                    <Text className="text-white">Login with Google</Text>
-                </TouchableOpacity>
 
                 <TouchableOpacity
-                    className="bg-emerald-400 px-4 py-2 rounded flex-row items-center justify-center"
-                    style={{marginTop: 5}}
+                    className=" px-4 py-2 rounded flex-row items-center justify-center"
+                    style={{backgroundColor: '#ff4d4d',marginTop: 5}}
                     onPress={handlePhoneLogin}
                 >
                     <Text className="text-white">Login with Phone Number</Text>
@@ -126,10 +161,47 @@ export default function LoginPage() {
                         Don't have an account?{' '}
                     </Text>
                     <TouchableOpacity onPress={handleRegister}>
-                        <Text className="text-blue-500" style={{lineHeight: 24}}>Register</Text>
+                        <Text style={{ color: '#ff4d4d', lineHeight: 24 }}>Register</Text>
                     </TouchableOpacity>
                 </View>
             </View>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={phoneModalVisible}
+                onRequestClose={() => setPhoneModalVisible(false)}
+            >
+                <View style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: 'rgba(0, 0, 0, 0.5)'
+                }}>
+                    <View className="bg-white p-6 rounded-lg w-4/5">
+                        <Text className="text-2xl font-bold mb-4 text-center">Enter Phone Number</Text>
+                        <TextInput
+                            className="border border-gray-300 rounded px-4 py-2 mb-4"
+                            placeholder="Enter your phone number"
+                            keyboardType="phone-pad"
+                            value={phoneNumber}
+                            onChangeText={setPhoneNumber}
+                        />
+                        <TouchableOpacity
+                            style={{backgroundColor: '#ff4d4d'}}
+                            className=" px-4 py-2 rounded"
+                            onPress={handlePhoneSubmit}
+                        >
+                            <Text className="text-white text-center">Login</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            className="mt-2"
+                            onPress={() => setPhoneModalVisible(false)}
+                        >
+                            <Text className="text-center text-blue-500">Cancel</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
         </ImageBackground>
     );
 }

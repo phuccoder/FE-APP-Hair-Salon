@@ -1,8 +1,9 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import {ApplicationConstants} from "@/constants/ApplicationConstants";
-import {SignInRequest, SignInResponse, SignUpRequest, SuccessResponse} from "@/dtos/Authentication.dto";
 import {httpClient} from "@/config/authenticated.interceptor";
-import {from, mergeMap, Observable, tap} from "rxjs";
+import {ApplicationConstants} from "@/constants/ApplicationConstants";
+import {SignInRequest, SignInResponse, SignUpRequest, SuccessResponse, TokenPayload} from "@/dtos/Authentication.dto";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {jwtDecode} from "jwt-decode";
+import {from, mergeMap, Observable, of, tap, throwError} from "rxjs";
 
 const storeAccessTokenFn = async (token: string): Promise<void> => {
     try {
@@ -12,11 +13,19 @@ const storeAccessTokenFn = async (token: string): Promise<void> => {
     }
 };
 
+const removeAccessTokenFn = async (): Promise<void> => {
+    try {
+        await AsyncStorage.removeItem(ApplicationConstants.ACCESS_TOKEN);
+    } catch (error) {
+        console.error('Failed to remove token', error);
+    }
+};
+
 export const authServices = {
     signIn: (signInRequest: SignInRequest): Observable<SuccessResponse<SignInResponse>> => {
         return httpClient<SuccessResponse<SignInResponse>>({
             method: 'POST',
-            url: `${ApplicationConstants.BASE_URL}/v1/user/signIn`,
+            url: `${ApplicationConstants.BASE_URL}/user/signIn`,
             data: signInRequest
         }).pipe(
             mergeMap(response =>
@@ -35,5 +44,27 @@ export const authServices = {
             url: `${ApplicationConstants.BASE_URL}/v1/user/signup`,
             data: signUpRequest
         });
+    },
+    extractToken: (): Observable<TokenPayload> => {
+        return from(AsyncStorage.getItem(ApplicationConstants.ACCESS_TOKEN)).pipe(
+            mergeMap((token) => {
+                if (!token) {
+                    return throwError(() => new Error('No token found'));
+                }
+                try {
+                    const decodedToken = jwtDecode<TokenPayload>(token);
+                    return of(decodedToken);
+                } catch (error) {
+                    return throwError(() => new Error('Failed to decode token'));
+                }
+            })
+        );
+    },
+    logout: (): Observable<void> => {
+        return from(removeAccessTokenFn()).pipe(
+            tap((): void => {
+                console.log('Access token removed successfully');
+            })
+        );
     }
 };

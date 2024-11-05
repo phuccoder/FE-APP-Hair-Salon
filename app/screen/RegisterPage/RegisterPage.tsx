@@ -31,6 +31,8 @@ export default function RegisterPage() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [passwordError, setPasswordError] = useState('');
+    const [isPhoneModalVisible, setIsPhoneModalVisible] = useState(false);
+    const phoneInput = useRef<TextInput>(null);
     const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'RegisterPage'>>();
     const validateEmail = (email: string): boolean => {
         // TODO: choose the correct email regex
@@ -104,7 +106,11 @@ export default function RegisterPage() {
     };
 
     const handlePhoneRegister = () => {
-        Alert.alert('Phone Register', 'Register with Phone Number is clicked');
+        setIsPhoneModalVisible(true);
+        // Focus vào input khi modal mở
+        setTimeout(() => {
+            phoneInput.current?.focus();
+        }, 100); // Delay một chút để đảm bảo modal đã hiển thị trước khi focus
     };
 
     const handleLogin = () => {
@@ -188,8 +194,8 @@ export default function RegisterPage() {
                 </View>
 
                 <TouchableOpacity
-                    style={{marginBottom: 20}}
-                    className="bg-emerald-400 px-4 py-2 rounded"
+                    style={{marginBottom: 20, backgroundColor: '#ff4d4d'}}
+                    className=" px-4 py-2 rounded"
                     onPress={onSignUp}
                     disabled={loading}
                 >
@@ -203,19 +209,8 @@ export default function RegisterPage() {
                 <Text className="text-center mb-4">-----Or register with-----</Text>
 
                 <TouchableOpacity
-                    className="bg-emerald-400 px-4 py-2 rounded flex-row items-center justify-center"
-                    onPress={handleGoogleRegister}
-                >
-                    <Image
-                        source={{uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/768px-Google_%22G%22_logo.svg.png'}}
-                        style={{width: 20, height: 20, marginRight: 8}}
-                    />
-                    <Text className="text-white">Register with Google</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                    className="bg-emerald-400 px-4 py-2 rounded flex-row items-center justify-center"
-                    style={{marginTop: 5}}
+                    className=" px-4 py-2 rounded flex-row items-center justify-center"
+                    style={{marginTop: 5, backgroundColor: '#ff4d4d'}}
                     onPress={handlePhoneRegister}
                 >
                     <Text className="text-white">Register with Phone Number</Text>
@@ -225,10 +220,53 @@ export default function RegisterPage() {
                         Already have an account?{' '}
                     </Text>
                     <TouchableOpacity onPress={handleLogin}>
-                        <Text className="text-blue-500" style={{lineHeight: 24}}>Login</Text>
+                        <Text style={{ color: '#ff4d4d', lineHeight: 24 }}>Login</Text>
                     </TouchableOpacity>
                 </View>
             </View>
+            {isPhoneModalVisible && (
+                <View
+                    style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}
+                >
+                    <View className="bg-white p-6 rounded-lg w-4/5">
+                        <Text className="text-2xl font-bold mb-4 text-center">Enter Phone Number</Text>
+                        <TextInput
+                            ref={phoneInput}
+                            className="border border-gray-300 rounded px-4 py-2 mb-4"
+                            placeholder="Enter your phone number"
+                            value={phoneNumber}
+                            onChangeText={setPhoneNumber}
+                        />
+                        <TouchableOpacity
+                            style={{backgroundColor: '#ff4d4d'}}
+                            className=" px-4 py-2 rounded"
+                            onPress={() => {
+                                setIsPhoneModalVisible(false);
+                                // Xử lý đăng ký với số điện thoại ở đây
+                                // Ví dụ: gọi API đăng ký hoặc chuyển trang
+                                navigation.push('Home');
+                            }}
+                        >
+                            <Text className="text-white text-center">Register</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            className="bg-gray-300 px-4 py-2 rounded mt-2"
+                            onPress={() => setIsPhoneModalVisible(false)}
+                        >
+                            <Text className="text-center">Cancel</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            )}
         </ImageBackground>
     );
 }
