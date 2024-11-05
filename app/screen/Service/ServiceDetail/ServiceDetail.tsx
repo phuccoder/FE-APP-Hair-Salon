@@ -36,10 +36,10 @@ const ServiceDetail = ({ route }: ServiceDetailProps) => {
       >
         <Image
           source={{
-            uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQL1bx5wd1PTncyaHk8dNGV0i5I4Bmr3T6LHQ&s",
+            uri: detail.serviceImage,
           }}
-          resizeMode="stretch"
-          style={{ height: 350 }}
+          resizeMode="cover"
+          style={{ height: 500 }}
         />
         <View className="flex-1 flex-col gap-2 p-2">
           <Text className="font-medium text-xl">{detail.serviceName}</Text>
