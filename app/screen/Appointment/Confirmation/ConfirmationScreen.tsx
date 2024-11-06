@@ -5,7 +5,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '@/utils/navigation';
 
 type RouteParams = {
-  selectedServices: { id: string; name: string; price: number }[];
+  selectedItem: { id: string; name: string; price: number }[];
   selectedStylist: { name: string; speciality: string };
   appointmentDate: Date;
   appointmentTime: string;
@@ -16,14 +16,14 @@ const AppointmentConfirmation: React.FC = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const route = useRoute();
   const {
-    selectedServices,
+    selectedItem,
     selectedStylist,
     appointmentDate,
     appointmentTime,
     paymentMethod
   } = route.params as RouteParams;
 
-  const totalAmount = selectedServices.reduce((sum, service) => sum + service.price, 0);
+  const totalAmount = selectedItem.reduce((sum, service) => sum + service.price, 0);
 
   const styles = StyleSheet.create({
     container: {
@@ -234,7 +234,7 @@ const AppointmentConfirmation: React.FC = () => {
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Selected Services</Text>
-          {selectedServices.map(service => (
+          {selectedItem.map(service => (
             <View key={service.id} style={styles.serviceItem}>
               <Text style={styles.serviceName}>{service.name}</Text>
               <Text style={styles.servicePrice}>${service.price}</Text>

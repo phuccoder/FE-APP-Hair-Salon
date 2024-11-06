@@ -1,8 +1,11 @@
 export interface Stylist {
-    id: number;
-    name: string;
-    experience: number; // in years
-    specialty: string;
-    rating: number; // average rating
-    available: boolean;
+    stylistID: number;
+    stylistName: string;
+    stylistPhone: number;
+    stylistEmail: string;
+    stylistPassword: string;
+    stylistStatus: boolean;
+    role:string ;
+    stylistInfor: string;
+    stylistAvatar: string;
 }
