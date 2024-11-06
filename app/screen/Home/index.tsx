@@ -12,7 +12,7 @@ import {Subscription} from "rxjs";
 import {hairComboServices} from "@/service/hairComboServices";
 import {ComboDTO} from "@/dtos/Combo.dto";
 import {authServices} from "@/service/authServices";
-import { Icon } from "react-native-elements";
+import {Icon} from "react-native-elements";
 
 export default function HomeScreen({navigation}: any) {
     const [loading, setLoading] = useState<boolean>(true);
@@ -66,13 +66,13 @@ export default function HomeScreen({navigation}: any) {
                             );
                         } else {
                             // No valid token, navigate to login page
-                            navigation.replace('LoginPage');
+                            navigation.replace("LoginPage");
                         }
                     },
                     error: () => {
-                        console.log('No valid token found, navigate to login page');
-                        navigation.replace('LoginPage');
-                    }
+                        console.log("No valid token found, navigate to login page");
+                        navigation.replace("LoginPage");
+                    },
                 })
             );
         };
@@ -80,7 +80,9 @@ export default function HomeScreen({navigation}: any) {
         checkAuthenticationAndLoadData();
 
         return () => {
-            subscriptionsRef.current.forEach((subscription) => subscription.unsubscribe());
+            subscriptionsRef.current.forEach((subscription) =>
+                subscription.unsubscribe()
+            );
             subscriptionsRef.current = [];
         };
     }, [navigation]);
@@ -120,9 +122,7 @@ export default function HomeScreen({navigation}: any) {
 
     const renderStylist = ({item}: { item: StylistDTO }) => (
         <View style={{width: 150, marginRight: 10, alignItems: "center"}}>
-            <TouchableOpacity
-                onPress={() => navigation.navigate("StylistScreen")}
-            >
+            <TouchableOpacity onPress={() => navigation.navigate("StylistScreen")}>
                 {/* Uncomment to show stylist image */}
                 {/* <Image source={{ uri: item.stylistImage }} style={{ width: 100, height: 100, borderRadius: 50 }} /> */}
             </TouchableOpacity>
@@ -136,33 +136,44 @@ export default function HomeScreen({navigation}: any) {
         subscriptionsRef.current.push(
             authServices.logout().subscribe({
                 next: () => {
-                    navigation.replace('LoginPage');
+                    navigation.reset({
+                        index: 0,
+                        routes: [{name: "LoginStack"}],
+                    });
                 },
                 error: () => {
-                    console.error('Failed to logout');
-                }
+                    console.error("Failed to logout");
+                },
             })
         );
     };
 
     return (
         <FlatList
-            data={[1]} // Chỉ cần một phần tử để có thể cuộn
+            data={[1]}
             keyExtractor={() => "unique-key"}
             renderItem={() => (
                 <View style={{flexGrow: 1, backgroundColor: "#f4f4f4", padding: 10}}>
-                    {/* Header */}
-                    <View style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        padding: 20,
-                        backgroundColor: "white",
-                        borderBottomLeftRadius: 20,
-                        borderBottomRightRadius: 20,
-                    }}>
+                    <View
+                        style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            padding: 20,
+                            backgroundColor: "white",
+                            borderBottomLeftRadius: 20,
+                            borderBottomRightRadius: 20,
+                        }}
+                    >
                         <Image
-                            source={{uri: "https://img.freepik.com/premium-vector/woman-hair-salon-logo-design-luxury-vector_487414-1667.jpg"}}
-                            style={{width: 40, height: 40, borderRadius: 20, marginRight: 20}}
+                            source={{
+                                uri: "https://img.freepik.com/premium-vector/woman-hair-salon-logo-design-luxury-vector_487414-1667.jpg",
+                            }}
+                            style={{
+                                width: 40,
+                                height: 40,
+                                borderRadius: 20,
+                                marginRight: 20,
+                            }}
                         />
                         <View>
                             <Text style={{color: "black", fontSize: 16, fontWeight: "300"}}>
@@ -172,7 +183,7 @@ export default function HomeScreen({navigation}: any) {
                                 Welcome to HairSalon!
                             </Text>
                         </View>
-                        <View style={{ marginLeft: 'auto' }}>
+                        <View style={{marginLeft: "auto"}}>
                             <TouchableOpacity onPress={handleLogout}>
                                 <Icon
                                     name="logout"
@@ -184,7 +195,7 @@ export default function HomeScreen({navigation}: any) {
                                         padding: 10,
                                         borderRadius: 20,
                                         shadowColor: "#000",
-                                        shadowOffset: { width: 0, height: 2 },
+                                        shadowOffset: {width: 0, height: 2},
                                         shadowOpacity: 0.2,
                                         shadowRadius: 4,
                                         elevation: 5,
@@ -192,10 +203,8 @@ export default function HomeScreen({navigation}: any) {
                                 />
                             </TouchableOpacity>
                         </View>
-
                     </View>
 
-                    {/* Banner */}
                     <FlatList
                         data={banners}
                         horizontal
@@ -204,8 +213,16 @@ export default function HomeScreen({navigation}: any) {
                         renderItem={renderBanner}
                     />
 
-                    {/* Services */}
-                    <Text style={{fontSize: 20, fontWeight: "bold", marginBottom: 10, padding: 10}}>My Service</Text>
+                    <Text
+                        style={{
+                            fontSize: 20,
+                            fontWeight: "bold",
+                            marginBottom: 10,
+                            padding: 10,
+                        }}
+                    >
+                        My Service
+                    </Text>
                     <FlatList
                         data={services}
                         renderItem={renderService}
@@ -214,24 +231,52 @@ export default function HomeScreen({navigation}: any) {
                         columnWrapperStyle={{justifyContent: "space-between"}}
                     />
 
-                    {/* Stylists */}
-                    <Text style={{fontSize: 20, fontWeight: "bold", marginBottom: 10, padding: 10}}>My Stylist</Text>
+                    <Text
+                        style={{
+                            fontSize: 20,
+                            fontWeight: "bold",
+                            marginBottom: 10,
+                            padding: 10,
+                        }}
+                    >
+                        My Stylist
+                    </Text>
+
                     <FlatList
                         data={stylists}
                         horizontal
                         showsHorizontalScrollIndicator={false}
                         keyExtractor={(item) => item.stylistName}
-                        renderItem={renderStylist}
+                        renderItem={({ item }) => (
+                            <View style={{width: 150, marginRight: 10, alignItems: "center"}}>
+                                    <Image
+                                        source={{ uri: item.stylistAvatar }}
+                                        style={{ width: 100, height: 100, borderRadius: 50, marginBottom: 5 }}
+                                    />
+                                <Text style={{textAlign: "center"}}>{item.stylistName}</Text>
+                                <Text>Phone Number: {item.stylistPhone}</Text>
+                                <Text>Info: {item.stylistInfor}</Text>
+                            </View>
+                        )}
                     />
 
-                    {/* Combos */}
-                    <Text style={{fontSize: 20, fontWeight: "bold", marginBottom: 10, padding: 10}}>Combo</Text>
+                    <Text
+                        style={{
+                            fontSize: 20,
+                            fontWeight: "bold",
+                            marginBottom: 10,
+                            padding: 10,
+                        }}
+                    >
+                        Combo
+                    </Text>
                     <FlatList
                         data={combos}
-                        renderItem={({ item }) => (
+                        renderItem={({item}) => (
                             <TouchableOpacity
                                 style={{
                                     backgroundColor: "#ffdab9",
+                                    margin: 5,
                                     padding: 15,
                                     borderRadius: 10,
                                     width: "48%",
@@ -240,29 +285,17 @@ export default function HomeScreen({navigation}: any) {
                                 }}
                                 onPress={() => navigation.navigate("ComboDetail")}
                             >
-                                <Text style={{color: "#000", fontSize: 16}}>{item.comboName}</Text>
+                                <Text style={{color: "#000", fontSize: 16}}>
+                                    {item.comboName}
+                                </Text>
                             </TouchableOpacity>
                         )}
                         keyExtractor={(item) => item.comboID.toString()}
                         numColumns={2}
                     />
 
-                    {/* Booking Button */}
-                    <View style={{alignItems: "center"}}>
-                        <Button
-                            title="Đặt Lịch Ngay"
-                            buttonStyle={{
-                                backgroundColor: "#f08080",
-                                marginTop: 20,
-                                marginBottom: 20,
-                                borderRadius: 5,
-                            }}
-                            containerStyle={{width: 150}}
-                        />
-                    </View>
                 </View>
             )}
-            // Thêm header/footer nếu cần
         />
     );
 }

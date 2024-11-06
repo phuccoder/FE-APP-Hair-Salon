@@ -7,5 +7,6 @@ export interface StylistDTO {
     stylistStatus: boolean;
     role:string ;
     stylistInfor: string;
+    stylistAvatar: string;
 }
 
