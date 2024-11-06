@@ -1,15 +1,26 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '@/utils/navigation';
+import { StylistDTO } from '@/dtos/Stylist.dto';
+
+import { ServiceDTO } from '@/dtos/Service.dto';
+import { ComboDTO } from '@/dtos/Combo.dto';
+import { hairStylistServices } from '@/service/hairStylistServices';
 
 type RouteParams = {
   params: {
-    selectedItem: Service | Combo; 
-    };
+    selectedItem: ServiceDTO | ComboDTO;
   };
-  
+};
+
+const StylistScreen: React.FC = () => {
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const [selectedStylist, setSelectedStylist] = useState<StylistDTO | null>(null);
+  const route = useRoute<RouteProp<RouteParams>>();
+  const { selectedItem } = route.params || { selectedItem: [] };
+  const [stylists, setStylists] = useState<StylistDTO[]>([]);
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -211,57 +222,60 @@ type RouteParams = {
       fontWeight: '500',
     },
   });
+  useEffect(() => {
+    const fetchStylists = async () => {
+      try {
+        const response = await hairStylistServices.getAllStylist().toPromise();
+        if (response && response.data) {
+          setStylists(response.data);
+        }
+      } catch (error) {
+        console.error('Error fetching stylists:', error);
+      }
+    };
+    fetchStylists();
+  }, []);
 
-import { Stylist } from 'c:/FPTUni/FALL2024_FPT/MMA301/Project/HairSalon/FE-APP-Hair-Salon/model/Stylist';
-import { Combo, Service } from '@/model/Service';
-
-  const StylistScreen: React.FC = () => {
-    const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-    const [selectedStylist, setSelectedStylist] = useState<Stylist | null>(null);
-    const route = useRoute<RouteProp<RouteParams>>();
-    const { selectedItem } = route.params || { selectedItem: [] };
-  
-    const stylists: Stylist[] = [
-      { id: 1, name: 'Sarah Johnson', specialty: 'Color Specialist', experience: 5 , rating: 4.5, available: true },
-      { id: 2, name: 'Mike Chen', specialty: 'Cutting Expert', experience: 7, rating: 4.7, available: true },
-      { id: 3, name: 'Emma Davis', specialty: 'Styling Professional', experience: 4, rating: 4.6, available: true }
-    ];
-  
-    return (
-      <View style={styles.container}>
-        <ScrollView>
-          {stylists.map(stylist => (
-            <TouchableOpacity
-              key={stylist.id}
-              style={[
-                styles.stylistCard,
-                selectedStylist?.id === stylist.id && styles.selectedCard
-              ]}
-              onPress={() => setSelectedStylist(stylist)}
-            >
-              <View style={styles.stylistImage} />
-              <View style={styles.stylistInfo}>
-                <Text style={styles.stylistName}>{stylist.name}</Text>
-                <Text style={styles.stylistSpeciality}>{stylist.specialty}</Text>
-              </View>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-  
-        <View style={styles.footer}>
+  return (
+    <View style={styles.container}>
+      <ScrollView>
+        {stylists.map((stylist) => (
           <TouchableOpacity
-            style={[styles.button, !selectedStylist && styles.buttonDisabled]}
-            disabled={!selectedStylist}
-            onPress={() => navigation.navigate('DateTimeSelection', {
-              selectedItem,
-              selectedStylist
-            })}
+            key={stylist.stylistID}
+            style={[
+              styles.stylistCard,
+              selectedStylist?.stylistID === stylist.stylistID && styles.selectedCard,
+            ]}
+            onPress={() => setSelectedStylist(stylist)}
           >
-            <Text style={styles.buttonText}>Next: Choose Date & Time</Text>
+            <Image
+              source={{ uri: stylist.stylistAvatar }}
+              style={styles.stylistImage}
+            /> 
+            <View style={styles.stylistInfo}>
+              <Text style={styles.stylistName}>{stylist.stylistName}</Text>
+              <Text style={styles.stylistSpeciality}>{stylist.stylistInfor}</Text>
+            </View>
           </TouchableOpacity>
-        </View>
+        ))}
+      </ScrollView>
+
+      <View style={styles.footer}>
+        <TouchableOpacity
+          style={[styles.button, !selectedStylist && styles.buttonDisabled]}
+          disabled={!selectedStylist}
+          onPress={() =>
+            navigation.navigate('DateTimeSelection', {
+              selectedServices: selectedItem,
+              selectedStylist,
+            })
+          }
+        >
+          <Text style={styles.buttonText}>Next: Choose Date & Time</Text>
+        </TouchableOpacity>
       </View>
-    );
-  };
-  
-  export default StylistScreen;
+    </View>
+  );
+};
+
+export default StylistScreen;

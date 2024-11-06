@@ -9,10 +9,12 @@ export type RootStackParamList = {
   HomeScreen: undefined;
   ServiceScreen: undefined;
   ServiceDetail: { data: any };
-  Stylist: { selectedItem: Service | Combo; type: string};
-  DateTimeSelection: { selectedItem: any; selectedStylist: Stylist | null };
-  PaymentSelection: { selectedItem: any; selectedStylist: Stylist | null; appointmentDate: string; appointmentTime: string };
+  ComboDetail: { data: Combo };
+  Stylist: { selectedCombos: Combo[]; selectedServices: Service[] };
+  DateTimeSelection: { selectedServices: any; selectedStylist: Stylist | null };
+  PaymentSelection: { selectedServices: any; selectedStylist: Stylist | null; appointmentDate: string; appointmentTime: string };
   AppointmentConfirmation: { paymentMethod: { id: number; name: string; icon: string } | null };
+  AppointmentSelectedItem: { selectedItem: Service; type: string }; // Added AppointmentSelectedItem
 };
 // Navigation prop type for screens
 export type ServiceDetailNavigationProp = NativeStackNavigationProp<

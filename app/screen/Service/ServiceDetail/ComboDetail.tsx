@@ -24,7 +24,6 @@ const { width } = Dimensions.get("window"); // Get screen width for button layou
 const ComboDetail = ({ route, navigation }: ServiceDetailProps) => {
   const { data } = route.params;
   const [detail, setDetail] = useState<Combo>(data);
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   useEffect(() => {
     if (data) {
@@ -33,9 +32,9 @@ const ComboDetail = ({ route, navigation }: ServiceDetailProps) => {
   }, []);
 
   const handleBooking = () => {
-    navigation.navigate('Stylist', {
+    navigation.navigate('AppointmentSelectedItem', {
       selectedItem: detail,
-      type: 'combo'
+      type: 'combo',
     });
   };
 

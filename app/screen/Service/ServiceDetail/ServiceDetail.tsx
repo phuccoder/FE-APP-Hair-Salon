@@ -11,7 +11,7 @@ import {
   Text,
   View,
 } from "react-native";
-import { Button, Chip, Divider } from "react-native-elements";
+import { Button } from "react-native-elements";
 
 interface ServiceDetailProps {
   route?: any;
@@ -28,10 +28,10 @@ const ServiceDetail = ({ route }: ServiceDetailProps) => {
     if (data) {
       setDetail(data);
     }
-  }, []);
+  }, [data]);
 
   const handleBooking = () => {
-    navigation.navigate('Stylist', {
+    navigation.navigate('AppointmentSelectedItem', {
       selectedItem: detail,
       type: 'service',
     });
