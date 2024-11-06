@@ -1,5 +1,7 @@
 import { Service } from "@/model/Service";
 import { formatPrice } from "@/utils/formatPrice";
+import { RootStackParamList } from "@/utils/navigation";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import {
   Dimensions,
@@ -9,7 +11,7 @@ import {
   Text,
   View,
 } from "react-native";
-import { Button, Chip, Divider } from "react-native-elements";
+import { Button } from "react-native-elements";
 
 interface ServiceDetailProps {
   route?: any;
@@ -20,17 +22,25 @@ const { width } = Dimensions.get("window"); // Get screen width for button layou
 const ServiceDetail = ({ route }: ServiceDetailProps) => {
   const { data } = route.params;
   const [detail, setDetail] = useState<Service>(data);
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   useEffect(() => {
     if (data) {
       setDetail(data);
     }
-  }, []);
+  }, [data]);
+
+  const handleBooking = () => {
+    navigation.navigate('AppointmentSelectedItem', {
+      selectedItem: detail,
+      type: 'service',
+    });
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <ScrollView
-        style={{ flex: 1, marginBottom: 70 }} // Leave space for the fixed buttons
+        style={{ flex: 1, marginBottom: 70 }} 
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
       >
@@ -57,7 +67,7 @@ const ServiceDetail = ({ route }: ServiceDetailProps) => {
             titleStyle={{ color: "#94731a" }}
             containerStyle={{ borderColor: "#94731a", borderWidth: 1 }}
             title={"Booking"}
-            onPress={() => console.log("Booking")}
+            onPress={handleBooking}
           />
         </View>
         <View style={{ width: width / 2 - 10, paddingHorizontal: 5 }}>
@@ -66,7 +76,7 @@ const ServiceDetail = ({ route }: ServiceDetailProps) => {
             titleStyle={{ color: "#94731a" }}
             containerStyle={{ borderWidth: 1, borderColor: "#94731a" }}
             title={"Move to booking"}
-            onPress={() => console.log("Move to booking")}
+            onPress={handleBooking}
           />
         </View>
       </View>

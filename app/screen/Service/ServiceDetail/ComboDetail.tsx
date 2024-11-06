@@ -1,5 +1,7 @@
 import { Combo } from "@/model/Service";
 import { formatPrice } from "@/utils/formatPrice";
+import { RootStackParamList } from "@/utils/navigation";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import {
   Dimensions,
@@ -28,6 +30,13 @@ const ComboDetail = ({ route, navigation }: ServiceDetailProps) => {
       setDetail(data);
     }
   }, []);
+
+  const handleBooking = () => {
+    navigation.navigate('AppointmentSelectedItem', {
+      selectedItem: detail,
+      type: 'combo',
+    });
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -119,7 +128,7 @@ const ComboDetail = ({ route, navigation }: ServiceDetailProps) => {
             titleStyle={{ color: "#94731a" }}
             containerStyle={{ borderColor: "#94731a", borderWidth: 1 }}
             title={"Booking"}
-            onPress={() => console.log("Booking")}
+            onPress={handleBooking}
           />
         </View>
         <View style={{ width: width / 2 - 10, paddingHorizontal: 5 }}>
@@ -128,7 +137,7 @@ const ComboDetail = ({ route, navigation }: ServiceDetailProps) => {
             titleStyle={{ color: "#94731a" }}
             containerStyle={{ borderWidth: 1, borderColor: "#94731a" }}
             title={"Move to booking"}
-            onPress={() => console.log("Move to booking")}
+            onPress={handleBooking}
           />
         </View>
       </View>
