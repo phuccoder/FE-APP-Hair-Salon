@@ -4,22 +4,24 @@ import { RootStackParamList } from "@/utils/navigation";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import {
+  Dimensions,
   Image,
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
-  Dimensions,
 } from "react-native";
-import { Button, Chip, Divider } from "react-native-elements";
+import { Button, Divider } from "react-native-elements";
 
 interface ServiceDetailProps {
   route?: any;
+  navigation: any;
 }
 
 const { width } = Dimensions.get("window"); // Get screen width for button layout
 
-const ComboDetail = ({ route }: ServiceDetailProps) => {
+const ComboDetail = ({ route, navigation }: ServiceDetailProps) => {
   const { data } = route.params;
   const [detail, setDetail] = useState<Combo>(data);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -62,30 +64,49 @@ const ComboDetail = ({ route }: ServiceDetailProps) => {
           >
             <Text className="text-lg font-bold">Combo include</Text>
             <Divider />
-            <View
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
               style={{
-                display: "flex",
-                flexDirection: "row",
                 paddingTop: 8,
               }}
             >
               {detail.comboDetails.map((element) => (
-                <View key={element.serviceID} style={{ marginRight: 4 }}>
-                  <Chip
-                    title={element.serviceName}
-                    buttonStyle={{
-                      borderRadius: 8,
-                      backgroundColor: "rgb(231,211,199)",
-                      borderWidth: 1,
-                      borderColor: "#94731a",
-                    }}
-                    titleStyle={{
-                      color: "black",
-                    }}
-                  />
-                </View>
+                <TouchableOpacity
+                  key={element.serviceID}
+                  onPress={() =>
+                    navigation.push("ServiceDetail", { data: element })
+                  }
+                >
+                  <View
+                    style={[
+                      {
+                        backgroundColor: "red",
+                        borderRadius: 10,
+                        alignItems: "center",
+                        alignSelf: "flex-start", // Ensures the card width fits content
+                        marginBottom: 8,
+                        marginRight: 10,
+                        overflow: "hidden",
+                      },
+                      styles.shadowBox,
+                    ]}
+                  >
+                    <Image
+                      source={{ uri: element.serviceImage }}
+                      style={{ width: 100, height: 100 }}
+                      resizeMode="cover"
+                    />
+                    <View className="p-2 flex-col gap-1">
+                      <Text>{element.serviceName}</Text>
+                      <Text className="text-orange-600">
+                        {formatPrice(element.servicePrice)}
+                      </Text>
+                    </View>
+                  </View>
+                </TouchableOpacity>
               ))}
-            </View>
+            </ScrollView>
           </View>
           <View
             className="border-[1px] border-gray-300 p-2 rounded-lg"
