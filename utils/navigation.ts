@@ -1,4 +1,5 @@
 
+
 import { ComboDTO } from "@/dtos/Combo.dto";
 import { ServiceDTO } from "@/dtos/Service.dto";
 import { StylistDTO } from "@/dtos/Stylist.dto";
@@ -8,25 +9,36 @@ import { RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 
+
 export type RootStackParamList = {
   HomeScreen: undefined;
   ServiceScreen: undefined;
-  ServiceDetail: undefined;
-  ComboDetail: undefined;
-  Stylist: { selectedCombos: ComboDTO[]; selectedServices: ServiceDTO[] | null };
-  DateTimeSelection: { selectedServices: ServiceDTO[]; selectedCombos: ComboDTO[]; selectedStylist: StylistDTO };
-  PaymentSelection: { selectedServices: ServiceDTO[]; selectedCombos: ComboDTO[]; selectedStylist: StylistDTO; appointmentDate: string; appointmentTime: string };
-  AppointmentConfirmation: { selectedServices: ServiceDTO[]; selectedCombos: ComboDTO[]; selectedStylist: StylistDTO; appointmentDate: string; appointmentTime: string; paymentMethod: { id: number; name: string; icon: string } | null };
-  AppointmentSelectedItem: { selectedServices: ServiceDTO[]; selectedCombos: ComboDTO[] }; // Added AppointmentSelectedItem
+
+  VnPayPage: { data: string };
+  ServiceDetail: { data: any };
+  ComboDetail: { data: Combo };
+  Stylist: { selectedCombos: Combo[]; selectedServices: Service[] };
+  DateTimeSelection: { selectedServices: any; selectedStylist: Stylist | null };
+  PaymentSelection: {
+    selectedServices: any;
+    selectedStylist: Stylist | null;
+    appointmentDate: string;
+    appointmentTime: string;
+  };
+  AppointmentConfirmation: {
+    paymentMethod: { id: number; name: string; icon: string } | null;
+  };
+  AppointmentSelectedItem: { selectedItem: Service; type: string }; // Added AppointmentSelectedItem
+
 };
 // Navigation prop type for screens
 export type ServiceDetailNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
-  "ServiceDetail"
+  'ServiceDetail'
 >;
 
 // Route prop type for receiving params in ServiceDetail screen
 export type ServiceDetailRouteProp = RouteProp<
   RootStackParamList,
-  "ServiceDetail"
+  'ServiceDetail'
 >;
