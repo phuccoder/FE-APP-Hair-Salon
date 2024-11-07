@@ -9,7 +9,8 @@ import { RootStackParamList } from '@/utils/navigation';
 import { ServiceDTO } from '@/dtos/Service.dto';
 import { ComboDTO } from '@/dtos/Combo.dto';
 import { StylistDTO } from '@/dtos/Stylist.dto';
-import { ScheduleService } from '@/service/ScheduleServices';
+import { ScheduleService } from '@/service/scheduleServices';
+
 
 type RouteParams = {
   params: {

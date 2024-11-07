@@ -2,6 +2,7 @@ import * as React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Text, View } from "react-native";
 import HomeScreen from "../screen/Home";
+import AccountInfor from "../screen/Account/accountInfor";
 import { Ionicons } from "@expo/vector-icons";
 import { Ionicons as IoniconsType } from "@expo/vector-icons";
 import HomeStack from "../stack/HomeStack/HomeStack";
@@ -64,7 +65,7 @@ export default function Tabs() {
         options={{ tabBarLabel: "Service" }}
         component={ServiceStack}
       />
-      <Tab.Screen name="Account" component={SettingsScreen} />
+      <Tab.Screen name="Account" component={AccountInfor} />
       <Tab.Screen
         name="AppointmentStack"
         options={{ tabBarLabel: "Appointment" }}

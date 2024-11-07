@@ -32,7 +32,7 @@ const ServiceDetail = ({ route }: ServiceDetailProps) => {
 
   const handleBooking = () => {
     navigation.navigate('AppointmentSelectedItem', {
-      selectedServices: [detail],
+      selectedServices: [],
       selectedCombos: [],
     });
   };

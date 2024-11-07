@@ -5,7 +5,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '@/utils/navigation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ApplicationConstants } from '@/constants/ApplicationConstants';
-import { AppointmentService } from '@/service/AppointmentService';
+import { AppointmentService } from '@/service/appointmentService';
 
 const AppointmentConfirmation: React.FC = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -136,6 +136,7 @@ const AppointmentConfirmation: React.FC = () => {
       fontWeight: '500',
     },
   });
+
   const {
     selectedServices = [], // Default to an empty array
     selectedCombos = [], // Default to an empty array
@@ -180,11 +181,12 @@ const AppointmentConfirmation: React.FC = () => {
 
       const decodeToken = (token: string) => {
         try {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
+          const base64Url = token.split('.')[1];
+          const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+          const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
             return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
           }).join(''));
+          console.log('Decoded token payload:', jsonPayload); // Debugging statement
           return JSON.parse(jsonPayload);
         } catch (error) {
           console.error('Error decoding token:', error);
@@ -192,17 +194,23 @@ const AppointmentConfirmation: React.FC = () => {
         }
       };
 
+      const decodedToken = decodeToken(token);
+      const accountID = decodedToken.sub;
+      console.log('Decoded accountID:', accountID);
+
       const data = {
         appointmentDate,
-        accountID: decodeToken(token).accountID,
+        accountID,
         stylistID: Number(selectedStylist.stylistID),
         details,
       };
 
+      console.log('Sending appointment data:', JSON.stringify(data, null, 2));
+
       const response = await AppointmentService.createAppointment(data, token).toPromise();
       console.log('Appointment created successfully:', response);
 
-      // Navigate to HomeScreen or show a success message
+      // Navigate to Account screen or show a success message
       navigation.navigate('HomeScreen');
     } catch (error) {
       console.error('Error creating appointment:', error);
@@ -279,10 +287,7 @@ const AppointmentConfirmation: React.FC = () => {
 
         <TouchableOpacity
           style={styles.confirmButton}
-          onPress={() => {
-            // Handle appointment confirmation
-            navigation.navigate('HomeScreen');
-          }}
+          onPress={handleConfirmBooking}
         >
           <Text style={styles.confirmButtonText}>Confirm Booking</Text>
         </TouchableOpacity>

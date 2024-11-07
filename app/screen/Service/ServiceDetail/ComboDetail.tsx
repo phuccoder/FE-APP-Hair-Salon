@@ -34,7 +34,7 @@ const ComboDetail = ({ route, navigation }: ServiceDetailProps) => {
   const handleBooking = () => {
     navigation.navigate('AppointmentSelectedItem', {
       selectedServices: [],
-      selectedCombos: [detail],
+      selectedCombos: [],
     });
   };
 

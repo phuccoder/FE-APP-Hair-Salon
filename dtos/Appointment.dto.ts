@@ -9,3 +9,4 @@
     stylistID: number;
     details: AppointmentDetail[];
   }
+  
