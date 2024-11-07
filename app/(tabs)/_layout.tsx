@@ -1,8 +1,8 @@
-
 import * as React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Text, View } from 'react-native';
 import HomeScreen from '../screen/Home';
+import AccountInfor from '../screen/Account/accountInfor';
 import { Ionicons } from '@expo/vector-icons';
 import { Ionicons as IoniconsType } from '@expo/vector-icons';
 import HomeStack from '../stack/HomeStack/HomeStack';
@@ -10,20 +10,6 @@ import ServiceStack from '../stack/ServiceStack/ServiceStack';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import AppointmentStack from '../stack/AppointmentStack/AppointmentStack';
 import VnPayDemo from '../stack/CheckoutStack/VnPayDemo';
-
-import * as React from "react";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Text, View } from "react-native";
-import HomeScreen from "../screen/Home";
-import AccountInfor from "../screen/Account/accountInfor";
-import { Ionicons } from "@expo/vector-icons";
-import { Ionicons as IoniconsType } from "@expo/vector-icons";
-import HomeStack from "../stack/HomeStack/HomeStack";
-import ServiceStack from "../stack/ServiceStack/ServiceStack";
-import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
-import AppointmentStack from "../stack/AppointmentStack/AppointmentStack";
-import VnPayDemo from '../stack/CheckoutStack/VnPayDemo';
-
 
 function SettingsScreen() {
   return (
@@ -86,7 +72,7 @@ export default function Tabs() {
         component={ServiceStack}
       />
 
-      <Tab.Screen name="Account" component={AccountInfor} />
+      <Tab.Screen name='Account' component={AccountInfor} />
 
       <Tab.Screen
         name='AppointmentStack'
