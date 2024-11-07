@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { useRoute, useNavigation, RouteProp, NavigationProp } from '@react-navigation/native';
+import {
+  useRoute,
+  useNavigation,
+  RouteProp,
+  NavigationProp,
+} from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Schedule } from '@/dtos/Schedule.dto';
 import { ApplicationConstants } from '@/constants/ApplicationConstants';
@@ -9,8 +14,7 @@ import { RootStackParamList } from '@/utils/navigation';
 import { ServiceDTO } from '@/dtos/Service.dto';
 import { ComboDTO } from '@/dtos/Combo.dto';
 import { StylistDTO } from '@/dtos/Stylist.dto';
-import { ScheduleService } from '@/service/scheduleServices';
-
+import { ScheduleService } from '@/service/ScheduleServices';
 
 type RouteParams = {
   params: {
@@ -104,15 +108,20 @@ const DateTimeSelection: React.FC = () => {
   useEffect(() => {
     const fetchSchedules = async () => {
       try {
-        const token = await AsyncStorage.getItem(ApplicationConstants.ACCESS_TOKEN);
+        const token = await AsyncStorage.getItem(
+          ApplicationConstants.ACCESS_TOKEN
+        );
         if (!token) {
           throw new Error('No access token found');
         }
         if (selectedStylist?.stylistID !== undefined) {
-          const response = await ScheduleService.getSchedulesByStylistId(selectedStylist.stylistID, token).toPromise();
+          const response = await ScheduleService.getSchedulesByStylistId(
+            selectedStylist.stylistID,
+            token
+          ).toPromise();
           console.log('Selected stylist ID:', selectedStylist.stylistID);
           console.log('API response:', response); // Log the complete response
-  
+
           // Directly set the schedules from the response
           if (Array.isArray(response)) {
             setSchedules(response); // Set schedules directly from the response
@@ -128,13 +137,21 @@ const DateTimeSelection: React.FC = () => {
         console.error('Error fetching schedules:', error);
       }
     };
-  
+
     fetchSchedules();
   }, [selectedStylist]);
 
   useEffect(() => {
     const getDayOfWeek = (date: Date): string => {
-      const days = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
+      const days = [
+        'SUNDAY',
+        'MONDAY',
+        'TUESDAY',
+        'WEDNESDAY',
+        'THURSDAY',
+        'FRIDAY',
+        'SATURDAY',
+      ];
       return days[date.getDay()];
     };
 
@@ -142,7 +159,9 @@ const DateTimeSelection: React.FC = () => {
     console.log('Current day of week:', currentDayOfWeek);
     console.log('Fetched schedules:', schedules);
 
-    const schedule = schedules.find(s => s.dayOfWeek.trim().toUpperCase() === currentDayOfWeek);
+    const schedule = schedules.find(
+      (s) => s.dayOfWeek.trim().toUpperCase() === currentDayOfWeek
+    );
     console.log('Found schedule:', schedule);
 
     if (schedule && schedule.scheduleStatus === 'AVAILABLE') {
@@ -198,16 +217,14 @@ const DateTimeSelection: React.FC = () => {
     <View style={styles.container}>
       <Text style={styles.sectionTitle}>Select Date</Text>
       <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-        <Text style={styles.detailText}>
-          {formatDisplayDate(selectedDate)}
-        </Text>
+        <Text style={styles.detailText}>{formatDisplayDate(selectedDate)}</Text>
       </TouchableOpacity>
 
       {showDatePicker && (
         <DateTimePicker
           value={selectedDate}
-          mode="date"
-          display="default"
+          mode='date'
+          display='default'
           minimumDate={new Date()}
           onChange={(event: any, date: Date | undefined) => {
             setShowDatePicker(false);
