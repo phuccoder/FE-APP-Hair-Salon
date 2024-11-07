@@ -1,20 +1,21 @@
 // HomeStack.tsx
-import StylistScreen from "@/app/screen/Appointment/Stylist/StylistScreen";
-import ComboDetail from "@/app/screen/Service/ServiceDetail/ComboDetail";
-import ServiceDetail from "@/app/screen/Service/ServiceDetail/ServiceDetail";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import * as React from "react";
-import { View } from "react-native";
-import { Button, Text } from "react-native-elements";
-import HomeScreen from "../../screen/Home"; // Assuming your Home screen is here
-import LoginPage from "@/app/screen/LoginPage/LoginPage";
+import StylistScreen from '@/app/screen/Appointment/Stylist/StylistScreen';
+import ComboDetail from '@/app/screen/Service/ServiceDetail/ComboDetail';
+import ServiceDetail from '@/app/screen/Service/ServiceDetail/ServiceDetail';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import * as React from 'react';
+import { View } from 'react-native';
+import { Button, Text } from 'react-native-elements';
+import HomeScreen from '../../screen/Home'; // Assuming your Home screen is here
+import LoginPage from '@/app/screen/LoginPage/LoginPage';
+import VnPayPage from '@/app/screen/VnpayPage/VnPayPage';
 
 const Stack = createNativeStackNavigator();
 function DetailsScreen({ navigation }: any) {
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text className="text-red-500">Details Screen</Text>
-      <Button title="Go Back" onPress={() => navigation.goBack()} />
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text className='text-red-500'>Details Screen</Text>
+      <Button title='Go Back' onPress={() => navigation.goBack()} />
     </View>
   );
 }
@@ -22,32 +23,37 @@ export default function HomeStack() {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Home"
+        name='HomeScreen'
         component={HomeScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="Details"
+        name='Details'
         component={DetailsScreen}
-        options={{ title: "Details" }}
+        options={{ title: 'Details' }}
       />
       <Stack.Screen
-        name="StylistScreen"
+        name='VnPayPage'
+        options={{ headerShown: false }}
+        component={VnPayPage}
+      />
+      <Stack.Screen
+        name='StylistScreen'
         component={StylistScreen}
-        options={{ title: "Stylist" }}
+        options={{ title: 'Stylist' }}
       />
       <Stack.Screen
-        name="ServiceDetail"
+        name='ServiceDetail'
         component={ServiceDetail}
-        options={{ title: "ServiceDetail" }}
+        options={{ title: 'ServiceDetail' }}
       />
       <Stack.Screen
-        name="ComboDetail"
+        name='ComboDetail'
         component={ComboDetail}
-        options={{ title: "ComboDetail" }}
+        options={{ title: 'ComboDetail' }}
       />
       <Stack.Screen
-        name="LoginPage"
+        name='LoginPage'
         component={LoginPage}
         options={{ headerShown: false }}
       />

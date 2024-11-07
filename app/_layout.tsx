@@ -9,6 +9,8 @@ import Tabs from './(tabs)/_layout';
 import { NavigationContainer } from '@react-navigation/native';
 import { useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import VnPayPage from './screen/VnpayPage/VnPayPage';
+import HomeScreen from './screen/Home';
 
 SplashScreen.preventAutoHideAsync();
 const Stack = createNativeStackNavigator();
@@ -38,6 +40,12 @@ export default function RootLayout() {
                 name='LoginStack'
                 component={LoginStack}
                 options={{ headerShown: false }}
+              />
+
+              <Stack.Screen
+                name='VnPayPage'
+                options={{ headerShown: false }}
+                component={VnPayPage}
               />
               <Stack.Screen
                 name='(tabs)'

@@ -6,10 +6,11 @@ import { paymentApi } from '@/service/paymentServices';
 
 export default function VnPayDemo({ navigation }: any) {
   const payment = usePayment(navigation);
+
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Button
-        onPress={() => payment.paymentMutation.mutate('5')}
+        onPress={() => payment.paymentMutation.mutate('21')}
         title={'TEST PAYMENT'}
       ></Button>
     </View>

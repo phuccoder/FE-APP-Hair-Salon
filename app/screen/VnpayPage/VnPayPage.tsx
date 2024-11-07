@@ -1,6 +1,9 @@
+import useToast from '@/hooks/useToast';
+import { paymentApi, PaymentIntent } from '@/service/paymentServices';
 import { RootStackParamList } from '@/utils/navigation';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { useMutation } from '@tanstack/react-query';
 import { StyleSheet, Text, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 interface VNpayProps {
@@ -8,29 +11,62 @@ interface VNpayProps {
   navigation: any;
 }
 
-const VnPayPage = ({ route }: VNpayProps) => {
-  const { url } = route.params;
+const VnPayPage = ({ navigation, route }: VNpayProps) => {
+  const toast = useToast();
+  const { data } = route.params;
 
-  useNavigation<StackNavigationProp<RootStackParamList, 'VnPayPage'>>();
-  const vnpay_return = route.params;
+  const checkPayment = useMutation({
+    mutationFn: (data: PaymentIntent) => {
+      return paymentApi.paymentReturn(data);
+    },
+    onSuccess: async (data) => {
+      console.log('Payment success:', data.data);
+      toast.success('Payment success');
+      navigation.navigate('(tabs)');
+    },
+    onError: (error) => {
+      console.error('Payment error:', error);
+    },
+  });
 
-  const handleMessage = (event: any) => {
+  const handleMessage = (data: any) => {
     // if (event.nativeEvent.data === 'continueShopping') {
     //   navigation.navigate('Home');
     // }
-    console.log(event.nativeEvent.data);
+    console.log('event.nativeEvent.data:', data);
+
+    const urlParams = new URLSearchParams(data);
+    const vnp_ResponseCode = urlParams.get('vnp_ResponseCode');
+    const vnp_TransactionNo = urlParams.get('vnp_TransactionNo');
+    const vnp_BankCode = urlParams.get('vnp_BankCode');
+    const vnp_OrderInfo = urlParams.get('vnp_OrderInfo');
+    if (
+      !vnp_ResponseCode ||
+      !vnp_TransactionNo ||
+      !vnp_BankCode ||
+      !vnp_OrderInfo
+    ) {
+      console.error('Payment data is invalid');
+      return;
+    }
+    const ordInf = vnp_OrderInfo.split(':')[1];
+    const paymentData: PaymentIntent = {
+      vnp_ResponseCode,
+      vnp_TransactionNo,
+      vnp_BankCode,
+      vnp_OrderInfo: ordInf,
+    };
+    console.log('Payment data:', paymentData);
+    checkPayment.mutate(paymentData);
   };
 
-  console.log('data', url);
-
   return (
-    // <WebView
-    //   source={{uri:  }}
-    //   originWhitelist={['*']}
-    //   style={{flex: 1}}
-    //   onMessage={handleMessage}
-    // />
-    <></>
+    <WebView
+      source={{ uri: data }}
+      originWhitelist={['*']}
+      style={{ flex: 1 }}
+      onError={(er) => handleMessage(er.nativeEvent.url)}
+    />
   );
 };
 

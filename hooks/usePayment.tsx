@@ -15,7 +15,10 @@ const usePayment = (navigation: any) => {
     onSuccess: async (data) => {
       setPaymentData(data.data.url);
       if (data.data.url) {
-        navigation.navigate('VnPayPage', { data: data.data.url });
+        // Example of navigation action
+        navigation.navigate('VnPayPage', {
+          data: data.data.url,
+        });
       }
     },
     onError: (error) => {
