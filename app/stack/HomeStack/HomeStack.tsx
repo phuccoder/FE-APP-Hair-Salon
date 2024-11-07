@@ -9,6 +9,7 @@ import { Button, Text } from 'react-native-elements';
 import HomeScreen from '../../screen/Home'; // Assuming your Home screen is here
 import LoginPage from '@/app/screen/LoginPage/LoginPage';
 import VnPayPage from '@/app/screen/VnpayPage/VnPayPage';
+import  AppointmentSelectItem from "@/app/screen/Appointment/SelectedComboService/SelectedComboService";
 
 const Stack = createNativeStackNavigator();
 function DetailsScreen({ navigation }: any) {
@@ -57,6 +58,11 @@ export default function HomeStack() {
         component={LoginPage}
         options={{ headerShown: false }}
       />
+        <Stack.Screen
+            name="AppointmentSelectItem"
+            component={AppointmentSelectItem}
+            options={{ title: "Appointment Select" }}
+        />
     </Stack.Navigator>
   );
 }

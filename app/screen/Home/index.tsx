@@ -285,6 +285,19 @@ export default function HomeScreen({ navigation }: any) {
             keyExtractor={(item) => item.comboID.toString()}
             numColumns={2}
           />
+            <View style={{alignItems: "center"}}>
+                <Button
+                    title="Đặt Lịch Ngay"
+                    onPress={() => navigation.navigate("AppointmentSelectItem")}
+                    buttonStyle={{
+                        backgroundColor: "#f08080",
+                        marginTop: 20,
+                        marginBottom: 20,
+                        borderRadius: 5,
+                    }}
+                    containerStyle={{width: 150}}
+                />
+            </View>
         </View>
       )}
     />
