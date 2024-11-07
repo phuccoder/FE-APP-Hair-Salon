@@ -8,9 +8,11 @@ import LoginStack from './stack/LoginPageStack/LoginStack';
 import Tabs from './(tabs)/_layout';
 import { NavigationContainer } from '@react-navigation/native';
 import { useEffect } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 SplashScreen.preventAutoHideAsync();
 const Stack = createNativeStackNavigator();
+const queryClient = new QueryClient();
 
 export default function RootLayout() {
   useEffect(() => {
@@ -23,27 +25,29 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider>
-      <SafeAreaView
-        style={{
-          flex: 1,
-          paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
-        }}
-      >
-        <NavigationContainer independent={true}>
-          <Stack.Navigator initialRouteName='LoginStack'>
-            <Stack.Screen
-              name='LoginStack'
-              component={LoginStack}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name='(tabs)'
-              options={{ headerShown: false }}
-              component={Tabs}
-            />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </SafeAreaView>
+      <QueryClientProvider client={queryClient}>
+        <SafeAreaView
+          style={{
+            flex: 1,
+            paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+          }}
+        >
+          <NavigationContainer independent={true}>
+            <Stack.Navigator initialRouteName='LoginStack'>
+              <Stack.Screen
+                name='LoginStack'
+                component={LoginStack}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name='(tabs)'
+                options={{ headerShown: false }}
+                component={Tabs}
+              />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </SafeAreaView>
+      </QueryClientProvider>
     </ThemeProvider>
   );
 }

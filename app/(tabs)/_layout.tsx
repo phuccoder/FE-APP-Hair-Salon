@@ -1,17 +1,18 @@
-import * as React from "react";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Text, View } from "react-native";
-import HomeScreen from "../screen/Home";
-import { Ionicons } from "@expo/vector-icons";
-import { Ionicons as IoniconsType } from "@expo/vector-icons";
-import HomeStack from "../stack/HomeStack/HomeStack";
-import ServiceStack from "../stack/ServiceStack/ServiceStack";
-import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
-import AppointmentStack from "../stack/AppointmentStack/AppointmentStack";
+import * as React from 'react';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Text, View } from 'react-native';
+import HomeScreen from '../screen/Home';
+import { Ionicons } from '@expo/vector-icons';
+import { Ionicons as IoniconsType } from '@expo/vector-icons';
+import HomeStack from '../stack/HomeStack/HomeStack';
+import ServiceStack from '../stack/ServiceStack/ServiceStack';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
+import AppointmentStack from '../stack/AppointmentStack/AppointmentStack';
+import VnPayDemo from '../stack/CheckoutStack/VnPayDemo';
 
 function SettingsScreen() {
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text>Settings!</Text>
     </View>
   );
@@ -29,14 +30,14 @@ export default function Tabs() {
           tabBarIcon: ({ focused, color, size }) => {
             let iconName: keyof typeof Ionicons.glyphMap | undefined;
 
-            if (route.name === "HomeStack") {
-              iconName = focused ? "home" : "home-outline";
-            } else if (route.name === "Account") {
-              iconName = focused ? "person" : "person-outline";
-            } else if (route.name === "ServiceStack") {
-              iconName = focused ? "bag" : "bag-outline";
-            } else if (route.name === "AppointmentStack") {
-              iconName = focused ? "calendar" : "calendar-outline";
+            if (route.name === 'HomeStack') {
+              iconName = focused ? 'home' : 'home-outline';
+            } else if (route.name === 'Account') {
+              iconName = focused ? 'person' : 'person-outline';
+            } else if (route.name === 'ServiceStack') {
+              iconName = focused ? 'bag' : 'bag-outline';
+            } else if (route.name === 'AppointmentStack') {
+              iconName = focused ? 'calendar' : 'calendar-outline';
             }
 
             return iconName ? (
@@ -47,27 +48,32 @@ export default function Tabs() {
           headerShown: false,
           tabBarStyle: {
             display:
-              routeName === "ServiceDetail" || routeName === "ComboDetail"
-                ? "none"
-                : "flex",
+              routeName === 'ServiceDetail' || routeName === 'ComboDetail'
+                ? 'none'
+                : 'flex',
           },
         };
       }}
     >
       <Tab.Screen
-        name="HomeStack"
-        options={{ tabBarLabel: "Home" }}
+        name='VNPayDemo'
+        options={{ tabBarLabel: 'a' }}
+        component={VnPayDemo}
+      />
+      <Tab.Screen
+        name='HomeStack'
+        options={{ tabBarLabel: 'Home' }}
         component={HomeStack}
       />
       <Tab.Screen
-        name="ServiceStack"
-        options={{ tabBarLabel: "Service" }}
+        name='ServiceStack'
+        options={{ tabBarLabel: 'Service' }}
         component={ServiceStack}
       />
-      <Tab.Screen name="Account" component={SettingsScreen} />
+      <Tab.Screen name='Account' component={SettingsScreen} />
       <Tab.Screen
-        name="AppointmentStack"
-        options={{ tabBarLabel: "Appointment" }}
+        name='AppointmentStack'
+        options={{ tabBarLabel: 'Appointment' }}
         component={AppointmentStack}
       />
     </Tab.Navigator>
