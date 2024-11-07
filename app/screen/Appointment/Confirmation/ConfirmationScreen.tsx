@@ -200,7 +200,7 @@ const AppointmentConfirmation: React.FC = () => {
 
       const data = {
         appointmentDate,
-        accountID,
+        accountID: Number(accountID),
         stylistID: Number(selectedStylist.stylistID),
         details,
       };
