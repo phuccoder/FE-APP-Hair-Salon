@@ -1,32 +1,12 @@
-export interface AppointmentDetail {
-    appointmentDetailID: number;
-    serviceID: number | null;
-    comboID: number | null;
-    serviceName: string | null;
-    comboName: string | null;
-    servicePrice: number | null;
-    comboPrice: number | null;
-}
-
-export interface Review {
-    reviewID: number;
-    comment: string;
-    reviewRating: number;
-    accountID: number;
-    appointmentID: number;
-    reviewDate: string;
-}
-
-export interface Appointment {
-    appointmentID: number;
+ export interface AppointmentDetail {
+    serviceID?: number;
+    comboID?: number;
+  }
+  
+ export interface CreateAppointmentRequest {
     appointmentDate: string;
-    appointmentStatus: string;
     accountID: number;
     stylistID: number;
-    voucherID: number | null;
-    appointmentPrice: number;
-    appointmentDetails: AppointmentDetail[];
-    reviews: Review[];
-}
-
-export type AppointmentResponse = Appointment[];
+    details: AppointmentDetail[];
+  }
+  

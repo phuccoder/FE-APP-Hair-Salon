@@ -4,7 +4,7 @@ import { SuccessResponse, TokenPayload } from "@/dtos/Authentication.dto";
 import { UserDetailsDTO } from "@/dtos/User.dto";
 import { mergeMap, Observable } from "rxjs";
 import { authServices } from "./authServices";
-import { AppointmentResponse } from "@/dtos/Appointment.dto";
+import { AppointmentResponse } from "@/dtos/AppointmentViewdto";
 
 export const userServices = {
     getCurrentUser: (): Observable<SuccessResponse<UserDetailsDTO>> => {

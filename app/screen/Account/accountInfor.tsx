@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, ScrollView, Button, TouchableOpacity, Modal } from 'react-native';
 import { userServices } from '../../../service/userServices';
 import { UserDetailsDTO } from '../../../dtos/User.dto';
-import { Appointment, AppointmentDetail } from '../../../dtos/Appointment.dto';
+import { Appointment, AppointmentDetailView } from '@/dtos/AppointmentViewdto';
 
 const AccountInfor: React.FC = () => {
     const [userDetails, setUserDetails] = useState<UserDetailsDTO | null>(null);
@@ -107,7 +107,7 @@ const AccountInfor: React.FC = () => {
                     appointments.map((appointment) => (
                         <View key={appointment.appointmentID} style={styles.appointmentCard}>
                             <Text style={styles.appointmentText}>
-                                {appointment.appointmentDetails[0]?.serviceName || appointment.appointmentDetails[0]?.comboName}
+                                {appointment.appointmentDetails[0]?.serviceName || appointment.appointmentDetails[0]?.comboName || 'No details available'}
                             </Text>
                             <Text style={styles.appointmentText}>Date: {appointment.appointmentDate}</Text>
                             <Text style={[styles.appointmentText, getAppointmentStatusStyle(appointment.appointmentStatus)]}>
