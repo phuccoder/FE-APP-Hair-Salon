@@ -8,7 +8,7 @@ export const ScheduleService = {
   getSchedulesByStylistId: (stylistID: number, token: string): Observable<SuccessResponse<Schedule[]>> => {
     return securedHttpClient<SuccessResponse<Schedule[]>>({
       method: "GET",
-      url: `${ApplicationConstants.BASE_URL_WITHOUT_VERSION}/schedules-management/get-by-stylist-id/${stylistID}`,
+      url: `${ApplicationConstants.BASE_URL_WITHOUT_VERSION}/customer/schedules/get-by-stylist-id/${stylistID}`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
