@@ -8,6 +8,7 @@ import { comboApi } from '@/service/serviceApi';
 import { hairComboServices } from '@/service/hairComboServices';
 import { ComboDTO } from '@/dtos/Combo.dto';
 import { Button } from 'react-native-elements';
+import { ServiceDTO } from '@/dtos/Service.dto';
 
 interface AppointmentItem {
   id: string;
@@ -39,7 +40,7 @@ const AppointmentSelectedItem: React.FC = () => {
               ...detail,
               comboDetailID: detail.comboDetailID ?? 0, // Ensure comboDetailID is a number
             })),
-          } as Combo,
+          } as ComboDTO,
         }));
 
         const items: AppointmentItem[] = [
@@ -63,16 +64,29 @@ const AppointmentSelectedItem: React.FC = () => {
   }, []);
 
   const handleSelectItem = (item: AppointmentItem) => {
-    setSelectedItems((prev) =>
-      prev.includes(item) ? prev.filter((i) => i.id !== item.id) : [...prev, item]
-    );
-  };
-
-  const handleNavigateToStylist = () => {
-    navigation.navigate('Stylist', {
-      selectedCombos: selectedItems.filter(item => item.type === 'combo').map(item => item.data as Combo),
-      selectedServices: selectedItems.filter(item => item.type === 'service').map(item => item.data as Service),
+    setSelectedItems((prev) => {
+      const updatedItems = prev.some(i => i.id === item.id) 
+        ? prev.filter((i) => i.id !== item.id) 
+        : [...prev, item];
+      console.log('Selected items:', updatedItems); // Debugging statement
+      return updatedItems;
     });
+  };
+  
+  const handleNavigateToStylist = () => {
+    console.log('Selected items before navigation:', selectedItems); // Debugging statement
+    if (selectedItems.length > 0) {
+      const selectedCombos = selectedItems.filter(item => item.type === 'combo').map(item => item.data as ComboDTO);
+      const selectedServices = selectedItems.filter(item => item.type === 'service').map(item => item.data as ServiceDTO);
+      console.log('Selected Combos:', selectedCombos); // Debugging statement
+      console.log('Selected Services:', selectedServices); // Debugging statement
+      navigation.navigate('Stylist', {
+        selectedCombos,
+        selectedServices,
+      });
+    } else {
+      console.warn('No services or combos selected');
+    }
   };
 
   return (
@@ -124,6 +138,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     marginVertical: 5,
     borderRadius: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   selectedItem: {
     backgroundColor: '#d3d3d3',

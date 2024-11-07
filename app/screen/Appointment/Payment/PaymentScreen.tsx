@@ -1,19 +1,16 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
-import { useRoute, useNavigation, NavigationProp } from '@react-navigation/native';
+import { useRoute, useNavigation, NavigationProp, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '@/utils/navigation';
 
 const PaymentSelection: React.FC = () => {
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [selectedMethod, setSelectedMethod] = useState<{ id: number; name: string; icon: string } | null>(null);
-  const route = useRoute();
+  const route = useRoute<RouteProp<RootStackParamList, 'PaymentSelection'>>();
 
   const paymentMethods = [
-    { id: 1, name: 'Credit Card', icon: '💳' },
-    { id: 2, name: 'Debit Card', icon: '💳' },
-    { id: 3, name: 'Cash', icon: '💵' },
-    { id: 4, name: 'Digital Wallet', icon: '📱' }
+    { id: 1, name: 'VN Pay', icon: '💳' }
   ];
 
   const styles = StyleSheet.create({
@@ -240,10 +237,28 @@ const PaymentSelection: React.FC = () => {
         <TouchableOpacity
           style={[styles.button, !selectedMethod && styles.buttonDisabled]}
           disabled={!selectedMethod}
-          onPress={() => navigation.navigate('AppointmentConfirmation', {
-            ...route.params,
-            paymentMethod: selectedMethod
-          })}
+          onPress={() => {
+            console.log("Navigating to AppointmentConfirmation with params:", {
+              ...route.params,
+              selectedServices: route.params.selectedServices,
+              selectedCombos: route.params.selectedCombos,
+              selectedStylist: route.params.selectedStylist,
+              appointmentDate: route.params.appointmentDate,
+              appointmentTime: route.params.appointmentTime,
+              paymentMethod: selectedMethod
+            });
+            if (route.params) {
+              navigation.navigate('AppointmentConfirmation', {
+                ...route.params,
+                selectedServices: route.params.selectedServices,
+                selectedCombos: route.params.selectedCombos,
+                selectedStylist: route.params.selectedStylist,
+                appointmentDate: route.params.appointmentDate,
+                appointmentTime: route.params.appointmentTime,
+                paymentMethod: selectedMethod
+              });
+            }
+          }}
         >
           <Text style={styles.buttonText}>Review Appointment</Text>
         </TouchableOpacity>

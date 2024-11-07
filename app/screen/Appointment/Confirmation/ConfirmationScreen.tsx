@@ -3,28 +3,13 @@ import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-nati
 import { useRoute, useNavigation, NavigationProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '@/utils/navigation';
-
-type RouteParams = {
-  selectedItem: { id: string; name: string; price: number }[];
-  selectedStylist: { name: string; speciality: string };
-  appointmentDate: Date;
-  appointmentTime: string;
-  paymentMethod: { name: string };
-};
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ApplicationConstants } from '@/constants/ApplicationConstants';
+import { AppointmentService } from '@/service/AppointmentService';
 
 const AppointmentConfirmation: React.FC = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const route = useRoute();
-  const {
-    selectedItem,
-    selectedStylist,
-    appointmentDate,
-    appointmentTime,
-    paymentMethod
-  } = route.params as RouteParams;
-
-  const totalAmount = selectedItem.reduce((sum, service) => sum + service.price, 0);
-
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -46,82 +31,6 @@ const AppointmentConfirmation: React.FC = () => {
       fontSize: 20,
       fontWeight: 'bold',
       marginBottom: 16,
-    },
-    stylistCard: {
-      flexDirection: 'row',
-      padding: 16,
-      backgroundColor: '#fff',
-      borderRadius: 8,
-      marginBottom: 8,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 1 },
-      shadowOpacity: 0.1,
-      shadowRadius: 2,
-      elevation: 2,
-    },
-    selectedCard: {
-      backgroundColor: '#e6f3ff',
-      borderColor: '#007AFF',
-      borderWidth: 1,
-    },
-    stylistImage: {
-      width: 60,
-      height: 60,
-      borderRadius: 30,
-      backgroundColor: '#ddd',
-    },
-    stylistInfo: {
-      marginLeft: 12,
-      flex: 1,
-    },
-    stylistName: {
-      fontSize: 16,
-      fontWeight: '500',
-    },
-    stylistSpeciality: {
-      fontSize: 14,
-      color: '#666',
-      marginTop: 4,
-    },
-    timeSlotGrid: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      marginTop: 8,
-    },
-    timeSlot: {
-      width: '30%',
-      padding: 12,
-      margin: '1.5%',
-      backgroundColor: '#fff',
-      borderRadius: 8,
-      alignItems: 'center',
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 1 },
-      shadowOpacity: 0.1,
-      shadowRadius: 2,
-      elevation: 2,
-    },
-    selectedSlot: {
-      backgroundColor: '#007AFF',
-    },
-    timeSlotText: {
-      color: '#000',
-      fontSize: 14,
-    },
-    paymentCard: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      padding: 16,
-      backgroundColor: '#fff',
-      borderRadius: 8,
-      marginBottom: 8,
-    },
-    paymentIcon: {
-      fontSize: 24,
-      marginRight: 12,
-    },
-    paymentName: {
-      fontSize: 16,
     },
     section: {
       marginBottom: 16,
@@ -190,6 +99,7 @@ const AppointmentConfirmation: React.FC = () => {
       padding: 16,
       borderRadius: 8,
       alignItems: 'center',
+      flex: 1,
     },
     buttonDisabled: {
       backgroundColor: '#ccc',
@@ -226,6 +136,78 @@ const AppointmentConfirmation: React.FC = () => {
       fontWeight: '500',
     },
   });
+  const {
+    selectedServices = [], // Default to an empty array
+    selectedCombos = [], // Default to an empty array
+    selectedStylist = { stylistName: '', stylistInfor: '', stylistID: '' }, // Default to an empty object
+    appointmentDate = new Date().toISOString(), // Default to current date as string
+    appointmentTime = '', // Default to empty string
+    paymentMethod = null // Default to null
+  } = route.params as {
+    selectedServices: { serviceID: string; serviceName: string; servicePrice: number }[];
+    selectedCombos: { comboID: string; comboName: string; comboPrice: number }[];
+    selectedStylist: { stylistName: string; stylistInfor: string; stylistID: number | string };
+    appointmentDate: string; // Expecting appointmentDate as string
+    appointmentTime: string;
+    paymentMethod: { id: number; name: string; icon: string } | null;
+  };
+
+  const totalAmount = [
+    ...selectedServices,
+    ...selectedCombos
+  ].reduce((sum, item) => sum + ('servicePrice' in item ? item.servicePrice : item.comboPrice), 0);
+
+  console.log("Received parameters in AppointmentConfirmation:", {
+    selectedServices,
+    selectedCombos,
+    selectedStylist,
+    appointmentDate,
+    appointmentTime,
+    paymentMethod,
+  });
+
+  const handleConfirmBooking = async () => {
+    try {
+      const token = await AsyncStorage.getItem(ApplicationConstants.ACCESS_TOKEN);
+      if (!token) {
+        throw new Error('No access token found');
+      }
+
+      const details = [
+        ...selectedServices.map(service => ({ serviceID: Number(service.serviceID) })),
+        ...selectedCombos.map(combo => ({ comboID: Number(combo.comboID) })),
+      ];
+
+      const decodeToken = (token: string) => {
+        try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+          }).join(''));
+          return JSON.parse(jsonPayload);
+        } catch (error) {
+          console.error('Error decoding token:', error);
+          return { accountID: 0 };
+        }
+      };
+
+      const data = {
+        appointmentDate,
+        accountID: decodeToken(token).accountID,
+        stylistID: Number(selectedStylist.stylistID),
+        details,
+      };
+
+      const response = await AppointmentService.createAppointment(data, token).toPromise();
+      console.log('Appointment created successfully:', response);
+
+      // Navigate to HomeScreen or show a success message
+      navigation.navigate('HomeScreen');
+    } catch (error) {
+      console.error('Error creating appointment:', error);
+    }
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -234,10 +216,22 @@ const AppointmentConfirmation: React.FC = () => {
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Selected Services</Text>
-          {selectedItem.map(service => (
-            <View key={service.id} style={styles.serviceItem}>
-              <Text style={styles.serviceName}>{service.name}</Text>
-              <Text style={styles.servicePrice}>${service.price}</Text>
+          {selectedServices.map(service => (
+            <View key={service.serviceID} style={styles.serviceItem}>
+              <Text style={styles.serviceName}>{service.serviceName}</Text>
+              <Text style={styles.servicePrice}>{service.servicePrice} VND</Text>
+            </View>
+          ))}
+        </View>
+
+        <View style={styles.divider} />
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Selected Combos</Text>
+          {selectedCombos.map(combo => (
+            <View key={combo.comboID} style={styles.serviceItem}>
+              <Text style={styles.serviceName}>{combo.comboName}</Text>
+              <Text style={styles.servicePrice}>{combo.comboPrice} VND</Text>
             </View>
           ))}
         </View>
@@ -246,8 +240,8 @@ const AppointmentConfirmation: React.FC = () => {
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Stylist</Text>
-          <Text style={styles.detailText}>{selectedStylist.name}</Text>
-          <Text style={styles.subText}>{selectedStylist.speciality}</Text>
+          <Text style={styles.detailText}>{selectedStylist.stylistName}</Text>
+          <Text style={styles.subText}>{selectedStylist.stylistInfor}</Text>
         </View>
 
         <View style={styles.divider} />
@@ -255,7 +249,7 @@ const AppointmentConfirmation: React.FC = () => {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Date & Time</Text>
           <Text style={styles.detailText}>
-            {appointmentDate.toLocaleDateString()}
+            {new Date(appointmentDate).toLocaleDateString()}
           </Text>
           <Text style={styles.subText}>{appointmentTime}</Text>
         </View>
@@ -264,12 +258,14 @@ const AppointmentConfirmation: React.FC = () => {
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Payment Method</Text>
-          <Text style={styles.detailText}>{paymentMethod.name}</Text>
+          <Text style={styles.detailText}>
+            {paymentMethod ? paymentMethod.name : 'N/A'}
+          </Text>
         </View>
 
         <View style={styles.totalSection}>
           <Text style={styles.totalLabel}>Total Amount</Text>
-          <Text style={styles.totalAmount}>${totalAmount}</Text>
+          <Text style={styles.totalAmount}>{totalAmount} VND</Text>
         </View>
       </View>
 
@@ -294,4 +290,5 @@ const AppointmentConfirmation: React.FC = () => {
     </ScrollView>
   );
 };
-export default AppointmentConfirmation
+
+export default AppointmentConfirmation;
