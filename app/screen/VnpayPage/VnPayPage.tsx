@@ -4,7 +4,7 @@ import { RootStackParamList } from '@/utils/navigation';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useMutation } from '@tanstack/react-query';
-import { StyleSheet, Text, View } from 'react-native';
+import { Alert, StyleSheet, Text, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 interface VNpayProps {
   route?: any;
@@ -22,6 +22,7 @@ const VnPayPage = ({ navigation, route }: VNpayProps) => {
     onSuccess: async (data) => {
       console.log('Payment success:', data.data);
       toast.success('Payment success');
+      Alert.alert('Payment success');
       navigation.navigate('(tabs)');
     },
     onError: (error) => {
