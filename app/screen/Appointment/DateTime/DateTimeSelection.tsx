@@ -14,13 +14,13 @@ import { RootStackParamList } from '@/utils/navigation';
 import { ServiceDTO } from '@/dtos/Service.dto';
 import { ComboDTO } from '@/dtos/Combo.dto';
 import { StylistDTO } from '@/dtos/Stylist.dto';
-import { ScheduleService } from '@/service/ScheduleServices';
+import { ScheduleService } from '@/service/scheduleServices';
 
 type RouteParams = {
   params: {
-    selectedServices: ServiceDTO[]; // Update to use selectedServices
-    selectedCombos: ComboDTO[]; // Update to use selectedCombos
-    selectedStylist: StylistDTO | null; // Keep selectedStylist
+    selectedServices: ServiceDTO[];
+    selectedCombos: ComboDTO[];
+    selectedStylist: StylistDTO | null;
   };
 };
 
@@ -101,7 +101,7 @@ const DateTimeSelection: React.FC = () => {
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const route = useRoute<RouteProp<RouteParams, 'params'>>();
-  const { selectedServices, selectedCombos, selectedStylist } = route.params; // Update here
+  const { selectedServices, selectedCombos, selectedStylist } = route.params;
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
 
@@ -189,15 +189,7 @@ const DateTimeSelection: React.FC = () => {
 
       start.setMinutes(start.getMinutes() + 30);
 
-      if (start <= end) {
-        const formattedEnd = start.toLocaleTimeString('en-US', {
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: false,
-        });
-
-        slots.push(`${formattedStart} - ${formattedEnd}`);
-      }
+      slots.push(formattedStart);
     }
 
     return slots;
@@ -278,7 +270,7 @@ const DateTimeSelection: React.FC = () => {
                 selectedCombos,
                 selectedStylist,
                 appointmentDate: selectedDate.toISOString(),
-                appointmentTime: selectedSlot!,
+                appointmentTime: selectedSlot!, // Pass only the start time
               });
             } else {
               console.warn('No stylist selected');

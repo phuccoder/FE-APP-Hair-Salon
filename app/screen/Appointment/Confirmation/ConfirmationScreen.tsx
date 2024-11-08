@@ -186,7 +186,7 @@ const AppointmentConfirmation: React.FC = () => {
           const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
             return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
           }).join(''));
-          console.log('Decoded token payload:', jsonPayload); // Debugging statement
+          console.log('Decoded token payload:', jsonPayload); 
           return JSON.parse(jsonPayload);
         } catch (error) {
           console.error('Error decoding token:', error);
@@ -198,9 +198,12 @@ const AppointmentConfirmation: React.FC = () => {
       const accountID = decodedToken.sub;
       console.log('Decoded accountID:', accountID);
 
+      const datePart = appointmentDate.split('T')[0];
+      const formattedDateTime = `${datePart} ${appointmentTime}:00`;
+
       const data = {
-        appointmentDate,
-        accountID,
+        appointmentDate: formattedDateTime,
+        accountID: Number(accountID),
         stylistID: Number(selectedStylist.stylistID),
         details,
       };

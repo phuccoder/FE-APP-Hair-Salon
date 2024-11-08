@@ -5,7 +5,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '@/utils/navigation';
 
 const PaymentSelection: React.FC = () => {
-    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [selectedMethod, setSelectedMethod] = useState<{ id: number; name: string; icon: string } | null>(null);
   const route = useRoute<RouteProp<RootStackParamList, 'PaymentSelection'>>();
 
