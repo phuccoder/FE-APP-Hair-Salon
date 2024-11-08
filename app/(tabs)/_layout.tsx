@@ -9,7 +9,6 @@ import HomeStack from '../stack/HomeStack/HomeStack';
 import ServiceStack from '../stack/ServiceStack/ServiceStack';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import AppointmentStack from '../stack/AppointmentStack/AppointmentStack';
-import VnPayDemo from '../stack/CheckoutStack/VnPayDemo';
 
 function SettingsScreen() {
   return (
@@ -56,11 +55,6 @@ export default function Tabs() {
         };
       }}
     >
-      <Tab.Screen
-        name='VNPayDemo'
-        options={{ tabBarLabel: 'a' }}
-        component={VnPayDemo}
-      />
       <Tab.Screen
         name='HomeStack'
         options={{ tabBarLabel: 'Home' }}

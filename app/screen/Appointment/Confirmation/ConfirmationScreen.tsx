@@ -1,12 +1,23 @@
 import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
-import { useRoute, useNavigation, NavigationProp } from '@react-navigation/native';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
+import {
+  useRoute,
+  useNavigation,
+  NavigationProp,
+} from '@react-navigation/native';
 import { RootStackParamList } from '@/utils/navigation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ApplicationConstants } from '@/constants/ApplicationConstants';
 import { AppointmentService } from '@/service/appointmentService';
 import Toast from 'react-native-toast-message';
 import { jwtDecode } from 'jwt-decode';
+import moment from 'moment';
 
 const AppointmentConfirmation: React.FC = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -144,22 +155,35 @@ const AppointmentConfirmation: React.FC = () => {
     selectedStylist = { stylistName: '', stylistInfor: '', stylistID: '' }, // Default to an empty object
     appointmentDate = new Date().toISOString(), // Default to current date as string
     appointmentTime = '', // Default to empty string
-    paymentMethod = null // Default to null
+    paymentMethod = null, // Default to null
   } = route.params as {
-    selectedServices: { serviceID: string; serviceName: string; servicePrice: number }[];
-    selectedCombos: { comboID: string; comboName: string; comboPrice: number }[];
-    selectedStylist: { stylistName: string; stylistInfor: string; stylistID: number | string };
+    selectedServices: {
+      serviceID: string;
+      serviceName: string;
+      servicePrice: number;
+    }[];
+    selectedCombos: {
+      comboID: string;
+      comboName: string;
+      comboPrice: number;
+    }[];
+    selectedStylist: {
+      stylistName: string;
+      stylistInfor: string;
+      stylistID: number | string;
+    };
     appointmentDate: string; // Expecting appointmentDate as string
     appointmentTime: string;
     paymentMethod: { id: number; name: string; icon: string } | null;
   };
 
-  const totalAmount = [
-    ...selectedServices,
-    ...selectedCombos
-  ].reduce((sum, item) => sum + ('servicePrice' in item ? item.servicePrice : item.comboPrice), 0);
+  const totalAmount = [...selectedServices, ...selectedCombos].reduce(
+    (sum, item) =>
+      sum + ('servicePrice' in item ? item.servicePrice : item.comboPrice),
+    0
+  );
 
-  console.log("Received parameters in AppointmentConfirmation:", {
+  console.log('Received parameters in AppointmentConfirmation:', {
     selectedServices,
     selectedCombos,
     selectedStylist,
@@ -170,14 +194,18 @@ const AppointmentConfirmation: React.FC = () => {
 
   const handleConfirmBooking = async () => {
     try {
-      const token = await AsyncStorage.getItem(ApplicationConstants.ACCESS_TOKEN);
+      const token = await AsyncStorage.getItem(
+        ApplicationConstants.ACCESS_TOKEN
+      );
       if (!token) {
         throw new Error('No access token found');
       }
 
       const details = [
-        ...selectedServices.map(service => ({ serviceID: Number(service.serviceID) })),
-        ...selectedCombos.map(combo => ({ comboID: Number(combo.comboID) })),
+        ...selectedServices.map((service) => ({
+          serviceID: Number(service.serviceID),
+        })),
+        ...selectedCombos.map((combo) => ({ comboID: Number(combo.comboID) })),
       ];
 
       const decodedToken: { sub: string } = jwtDecode(token);
@@ -189,7 +217,7 @@ const AppointmentConfirmation: React.FC = () => {
       const formattedDateTime = `${datePart} ${startTime}:00`;
 
       const data = {
-        appointmentDate: formattedDateTime,
+        appointmentDate: formattedDate,
         accountID: Number(accountID),
         stylistID: Number(selectedStylist.stylistID),
         details,
@@ -197,8 +225,12 @@ const AppointmentConfirmation: React.FC = () => {
 
       console.log('Sending appointment data:', JSON.stringify(data, null, 2));
 
-      const response = await AppointmentService.createAppointment(data, token).toPromise();
-      console.log('Appointment created successfully:', response);
+      const response = await AppointmentService.createAppointment(
+        data,
+        token
+      ).toPromise();
+
+      // console.log('Appointment created successfully:', response);
 
       // Show success toast
       Toast.show({
@@ -221,10 +253,12 @@ const AppointmentConfirmation: React.FC = () => {
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Selected Services</Text>
-          {selectedServices.map(service => (
+          {selectedServices.map((service) => (
             <View key={service.serviceID} style={styles.serviceItem}>
               <Text style={styles.serviceName}>{service.serviceName}</Text>
-              <Text style={styles.servicePrice}>{service.servicePrice} VND</Text>
+              <Text style={styles.servicePrice}>
+                {service.servicePrice} VND
+              </Text>
             </View>
           ))}
         </View>
@@ -233,7 +267,7 @@ const AppointmentConfirmation: React.FC = () => {
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Selected Combos</Text>
-          {selectedCombos.map(combo => (
+          {selectedCombos.map((combo) => (
             <View key={combo.comboID} style={styles.serviceItem}>
               <Text style={styles.serviceName}>{combo.comboName}</Text>
               <Text style={styles.servicePrice}>{combo.comboPrice} VND</Text>
