@@ -1,20 +1,20 @@
-import {SuccessResponse} from "@/dtos/Authentication.dto";
-import {ServiceDTO} from "@/dtos/Service.dto";
-import {StylistDTO} from "@/dtos/Stylist.dto";
-import {UserDetailsDTO} from "@/dtos/User.dto";
-import {hairServices} from "@/service/hairService";
-import {hairStylistServices} from "@/service/hairStylistServices";
-import {userServices} from "@/service/userServices";
-import {useEffect, useRef, useState} from "react";
-import {FlatList, Image, Text, TouchableOpacity, View} from "react-native";
-import {Button} from "react-native-elements";
-import {Subscription} from "rxjs";
-import {hairComboServices} from "@/service/hairComboServices";
-import {ComboDTO} from "@/dtos/Combo.dto";
-import {authServices} from "@/service/authServices";
-import {Icon} from "react-native-elements";
+import { SuccessResponse } from "@/dtos/Authentication.dto";
+import { ServiceDTO } from "@/dtos/Service.dto";
+import { StylistDTO } from "@/dtos/Stylist.dto";
+import { UserDetailsDTO } from "@/dtos/User.dto";
+import { hairServices } from "@/service/hairService";
+import { hairStylistServices } from "@/service/hairStylistServices";
+import { userServices } from "@/service/userServices";
+import { useEffect, useRef, useState } from "react";
+import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
+import { Button } from "react-native-elements";
+import { Subscription } from "rxjs";
+import { hairComboServices } from "@/service/hairComboServices";
+import { ComboDTO } from "@/dtos/Combo.dto";
+import { authServices } from "@/service/authServices";
+import { Icon } from "react-native-elements";
 
-export default function HomeScreen({navigation}: any) {
+export default function HomeScreen({ navigation }: any) {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const subscriptionsRef = useRef<Subscription[]>([]);
@@ -93,10 +93,10 @@ export default function HomeScreen({navigation}: any) {
         "https://img.freepik.com/free-vector/hand-drawn-beauty-salon-facebook-cover_23-2149646009.jpg?semt=ais_hybrid",
     ];
 
-    const renderBanner = ({item}: { item: string }) => (
-        <View style={{width: 300, height: 200, marginRight: 10}}>
+    const renderBanner = ({ item }: { item: string }) => (
+        <View style={{ width: 300, height: 200, marginRight: 10 }}>
             <Image
-                source={{uri: item}}
+                source={{ uri: item }}
                 style={{
                     width: "100%",
                     height: "100%",
@@ -107,28 +107,28 @@ export default function HomeScreen({navigation}: any) {
         </View>
     );
 
-    const renderService = ({item}: { item: ServiceDTO }) => (
+    const renderService = ({ item }: { item: ServiceDTO }) => (
         <TouchableOpacity
-            style={{width: "48%", alignItems: "center", marginBottom: 10}}
-            onPress={() => navigation.navigate("ServiceDetail", {data: item})}
+            style={{ width: "48%", alignItems: "center", marginBottom: 10 }}
+            onPress={() => navigation.navigate("ServiceDetail", { data: item })}
         >
             <Image
-                source={{uri: item.serviceImage}}
-                style={{width: 80, height: 80, borderRadius: 40}}
+                source={{ uri: item.serviceImage }}
+                style={{ width: 80, height: 80, borderRadius: 40 }}
             />
-            <Text style={{textAlign: "center"}}>{item.serviceName}</Text>
+            <Text style={{ textAlign: "center" }}>{item.serviceName}</Text>
         </TouchableOpacity>
     );
 
-    const renderStylist = ({item}: { item: StylistDTO }) => (
-        <View style={{width: 150, marginRight: 10, alignItems: "center"}}>
+    const renderStylist = ({ item }: { item: StylistDTO }) => (
+        <View style={{ width: 150, marginRight: 10, alignItems: "center" }}>
             <TouchableOpacity>
                 <Image
-                    source={{uri: item.stylistAvatar}}
-                    style={{width: 100, height: 100, borderRadius: 50, marginBottom: 5}}
+                    source={{ uri: item.stylistAvatar }}
+                    style={{ width: 100, height: 100, borderRadius: 50, marginBottom: 5 }}
                 />
             </TouchableOpacity>
-            <Text style={{textAlign: "center"}}>{item.stylistName}</Text>
+            <Text style={{ textAlign: "center" }}>{item.stylistName}</Text>
             <Text>Phone Number: {item.stylistPhone}</Text>
             <Text>Info: {item.stylistInfor}</Text>
         </View>
@@ -140,7 +140,7 @@ export default function HomeScreen({navigation}: any) {
                 next: () => {
                     navigation.reset({
                         index: 0,
-                        routes: [{name: "LoginStack"}],
+                        routes: [{ name: "LoginStack" }],
                     });
                 },
                 error: () => {
@@ -155,7 +155,7 @@ export default function HomeScreen({navigation}: any) {
             data={[1]}
             keyExtractor={() => "unique-key"}
             renderItem={() => (
-                <View style={{flexGrow: 1, backgroundColor: "#f4f4f4", padding: 10}}>
+                <View style={{ flexGrow: 1, backgroundColor: "#f4f4f4", padding: 10 }}>
                     <View
                         style={{
                             flexDirection: "row",
@@ -178,14 +178,14 @@ export default function HomeScreen({navigation}: any) {
                             }}
                         />
                         <View>
-                            <Text style={{color: "black", fontSize: 16, fontWeight: "300"}}>
+                            <Text style={{ color: "black", fontSize: 16, fontWeight: "300" }}>
                                 {user ? `Hello ${user.accountName}` : "Hello, anonymous!"}
                             </Text>
-                            <Text style={{color: "black", fontSize: 16, fontWeight: "300"}}>
+                            <Text style={{ color: "black", fontSize: 16, fontWeight: "300" }}>
                                 Welcome to HairSalon!
                             </Text>
                         </View>
-                        <View style={{marginLeft: "auto"}}>
+                        <View style={{ marginLeft: "auto" }}>
                             <TouchableOpacity onPress={handleLogout}>
                                 <Icon
                                     name="logout"
@@ -197,7 +197,7 @@ export default function HomeScreen({navigation}: any) {
                                         padding: 10,
                                         borderRadius: 20,
                                         shadowColor: "#000",
-                                        shadowOffset: {width: 0, height: 2},
+                                        shadowOffset: { width: 0, height: 2 },
                                         shadowOpacity: 0.2,
                                         shadowRadius: 4,
                                         elevation: 5,
@@ -230,7 +230,7 @@ export default function HomeScreen({navigation}: any) {
                         renderItem={renderService}
                         keyExtractor={(item) => item.serviceName}
                         numColumns={2}
-                        columnWrapperStyle={{justifyContent: "space-between"}}
+                        columnWrapperStyle={{ justifyContent: "space-between" }}
                     />
 
                     <Text
@@ -264,7 +264,7 @@ export default function HomeScreen({navigation}: any) {
                     </Text>
                     <FlatList
                         data={combos}
-                        renderItem={({item}) => (
+                        renderItem={({ item }) => (
                             <TouchableOpacity
                                 style={{
                                     backgroundColor: "#ffdab9",
@@ -275,9 +275,9 @@ export default function HomeScreen({navigation}: any) {
                                     alignItems: "center",
                                     marginBottom: 10,
                                 }}
-                                onPress={() => navigation.navigate("ComboDetail", {data: item})}
+                                onPress={() => navigation.navigate("ComboDetail", { data: item })}
                             >
-                                <Text style={{color: "#000", fontSize: 16}}>
+                                <Text style={{ color: "#000", fontSize: 16 }}>
                                     {item.comboName}
                                 </Text>
                             </TouchableOpacity>
@@ -285,17 +285,17 @@ export default function HomeScreen({navigation}: any) {
                         keyExtractor={(item) => item.comboID.toString()}
                         numColumns={2}
                     />
-                    <View style={{alignItems: "center"}}>
+                    <View style={{ alignItems: "center" }}>
                         <Button
                             title="Đặt Lịch Ngay"
-                            onPress={() => navigation.navigate("AppointmentSelectItem")}
+                            onPress={() => navigation.navigate("AppointmentStack")}
                             buttonStyle={{
                                 backgroundColor: "#f08080",
                                 marginTop: 20,
                                 marginBottom: 20,
                                 borderRadius: 5,
                             }}
-                            containerStyle={{width: 150}}
+                            containerStyle={{ width: 150 }}
                         />
                     </View>
                 </View>
