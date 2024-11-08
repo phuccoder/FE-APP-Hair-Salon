@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRoute, useNavigation, NavigationProp } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '@/utils/navigation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ApplicationConstants } from '@/constants/ApplicationConstants';
 import { AppointmentService } from '@/service/appointmentService';
+import Toast from 'react-native-toast-message';
+import { jwtDecode } from 'jwt-decode';
 
 const AppointmentConfirmation: React.FC = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -179,22 +180,7 @@ const AppointmentConfirmation: React.FC = () => {
         ...selectedCombos.map(combo => ({ comboID: Number(combo.comboID) })),
       ];
 
-      const decodeToken = (token: string) => {
-        try {
-          const base64Url = token.split('.')[1];
-          const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-          const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-          }).join(''));
-          console.log('Decoded token payload:', jsonPayload); 
-          return JSON.parse(jsonPayload);
-        } catch (error) {
-          console.error('Error decoding token:', error);
-          return { accountID: 0 };
-        }
-      };
-
-      const decodedToken = decodeToken(token);
+      const decodedToken: { sub: string } = jwtDecode(token);
       const accountID = decodedToken.sub;
       console.log('Decoded accountID:', accountID);
 
@@ -213,7 +199,14 @@ const AppointmentConfirmation: React.FC = () => {
       const response = await AppointmentService.createAppointment(data, token).toPromise();
       console.log('Appointment created successfully:', response);
 
-      // Navigate to Account screen or show a success message
+      // Show success toast
+      Toast.show({
+        type: 'success',
+        text1: 'Appointment Confirmed',
+        text2: 'Your appointment has been successfully created.',
+      });
+
+      // Navigate to Home screen
       navigation.navigate('HomeScreen');
     } catch (error) {
       console.error('Error creating appointment:', error);
@@ -295,6 +288,8 @@ const AppointmentConfirmation: React.FC = () => {
           <Text style={styles.confirmButtonText}>Confirm Booking</Text>
         </TouchableOpacity>
       </View>
+
+      <Toast />
     </ScrollView>
   );
 };
