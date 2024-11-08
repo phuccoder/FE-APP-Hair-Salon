@@ -16,11 +16,12 @@ import { ComboDTO } from '@/dtos/Combo.dto';
 import { StylistDTO } from '@/dtos/Stylist.dto';
 import { ScheduleService } from '@/service/scheduleServices';
 
+
 type RouteParams = {
   params: {
-    selectedServices: ServiceDTO[];
-    selectedCombos: ComboDTO[];
-    selectedStylist: StylistDTO | null;
+    selectedServices: ServiceDTO[]; // Update to use selectedServices
+    selectedCombos: ComboDTO[]; // Update to use selectedCombos
+    selectedStylist: StylistDTO | null; // Keep selectedStylist
   };
 };
 
@@ -101,7 +102,7 @@ const DateTimeSelection: React.FC = () => {
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const route = useRoute<RouteProp<RouteParams, 'params'>>();
-  const { selectedServices, selectedCombos, selectedStylist } = route.params;
+  const { selectedServices, selectedCombos, selectedStylist } = route.params; // Update here
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
 
@@ -189,7 +190,15 @@ const DateTimeSelection: React.FC = () => {
 
       start.setMinutes(start.getMinutes() + 30);
 
-      slots.push(formattedStart);
+      if (start <= end) {
+        const formattedEnd = start.toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false,
+        });
+
+        slots.push(`${formattedStart} - ${formattedEnd}`);
+      }
     }
 
     return slots;
@@ -270,7 +279,7 @@ const DateTimeSelection: React.FC = () => {
                 selectedCombos,
                 selectedStylist,
                 appointmentDate: selectedDate.toISOString(),
-                appointmentTime: selectedSlot!, // Pass only the start time
+                appointmentTime: selectedSlot!,
               });
             } else {
               console.warn('No stylist selected');
