@@ -185,7 +185,7 @@ const AppointmentConfirmation: React.FC = () => {
       console.log('Decoded accountID:', accountID);
 
       const datePart = appointmentDate.split('T')[0];
-      const startTime = appointmentTime.split(' - ')[0]; // Extract only the start time
+      const startTime = appointmentTime.split(' - ')[0]; 
       const formattedDateTime = `${datePart} ${startTime}:00`;
 
       const data = {
