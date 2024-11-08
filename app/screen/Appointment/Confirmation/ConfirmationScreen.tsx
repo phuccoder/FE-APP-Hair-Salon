@@ -1,11 +1,11 @@
 import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRoute, useNavigation, NavigationProp } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '@/utils/navigation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ApplicationConstants } from '@/constants/ApplicationConstants';
 import { AppointmentService } from '@/service/appointmentService';
+import Toast from 'react-native-toast-message';
 
 const AppointmentConfirmation: React.FC = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -213,7 +213,14 @@ const AppointmentConfirmation: React.FC = () => {
       const response = await AppointmentService.createAppointment(data, token).toPromise();
       console.log('Appointment created successfully:', response);
 
-      // Navigate to Account screen or show a success message
+      // Show success toast
+      Toast.show({
+        type: 'success',
+        text1: 'Appointment Confirmed',
+        text2: 'Your appointment has been successfully created.',
+      });
+
+      // Navigate to Home screen
       navigation.navigate('HomeScreen');
     } catch (error) {
       console.error('Error creating appointment:', error);
@@ -295,6 +302,8 @@ const AppointmentConfirmation: React.FC = () => {
           <Text style={styles.confirmButtonText}>Confirm Booking</Text>
         </TouchableOpacity>
       </View>
+
+      <Toast />
     </ScrollView>
   );
 };
