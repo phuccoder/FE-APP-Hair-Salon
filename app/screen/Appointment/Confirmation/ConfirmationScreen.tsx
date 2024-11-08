@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRoute, useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '@/utils/navigation';
@@ -11,6 +11,7 @@ import { jwtDecode } from 'jwt-decode';
 const AppointmentConfirmation: React.FC = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const route = useRoute();
+  const [isLoading, setIsLoading] = useState(false);
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -182,7 +183,6 @@ const AppointmentConfirmation: React.FC = () => {
 
       const decodedToken: { sub: string } = jwtDecode(token);
       const accountID = decodedToken.sub;
-      console.log('Decoded accountID:', accountID);
 
       const datePart = appointmentDate.split('T')[0];
       const startTime = appointmentTime.split(' - ')[0]; 
@@ -195,22 +195,42 @@ const AppointmentConfirmation: React.FC = () => {
         details,
       };
 
-      console.log('Sending appointment data:', JSON.stringify(data, null, 2));
-
       const response = await AppointmentService.createAppointment(data, token).toPromise();
-      console.log('Appointment created successfully:', response);
-
-      // Show success toast
+      
       Toast.show({
         type: 'success',
         text1: 'Appointment Confirmed',
         text2: 'Your appointment has been successfully created.',
       });
 
-      // Navigate to Home screen
       navigation.navigate('HomeScreen');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating appointment:', error);
+      
+      // Handle specific error cases
+      if (error?.response?.status === 409) {
+        Toast.show({
+          type: 'error',
+          text1: 'Scheduling Conflict',
+          text2: 'This time slot is no longer available. Please select another time.',
+        });
+        navigation.goBack(); // Go back to scheduling screen
+      } else if (error?.response?.status === 401) {
+        Toast.show({
+          type: 'error',
+          text1: 'Session Expired',
+          text2: 'Please log in again to continue.',
+        });
+        // Handle authentication error (e.g., navigate to login)
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'Booking Failed',
+          text2: 'Unable to create appointment. Please try again.',
+        });
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
