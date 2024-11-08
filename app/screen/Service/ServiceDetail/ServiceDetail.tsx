@@ -20,8 +20,8 @@ interface ServiceDetailProps {
 const { width } = Dimensions.get("window"); // Get screen width for button layout
 
 const ServiceDetail = ({ route }: ServiceDetailProps) => {
-  const { data } = route.params;
-  const [detail, setDetail] = useState<Service>(data);
+  const { data } = route.params || {}; // Add fallback for undefined parameters
+  const [detail, setDetail] = useState<Service | null>(data);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   useEffect(() => {
@@ -36,6 +36,10 @@ const ServiceDetail = ({ route }: ServiceDetailProps) => {
       selectedCombos: [],
     });
   };
+
+  if (!detail) {
+    return <Text>Loading...</Text>;
+  }
 
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -60,26 +64,6 @@ const ServiceDetail = ({ route }: ServiceDetailProps) => {
       </ScrollView>
 
       {/* Fixed Buttons at the Bottom */}
-      <View style={styles.fixedButtonContainer}>
-        <View style={{ width: width / 2 - 10, paddingHorizontal: 5 }}>
-          <Button
-            buttonStyle={styles.buttonStyle}
-            titleStyle={{ color: "#94731a" }}
-            containerStyle={{ borderColor: "#94731a", borderWidth: 1 }}
-            title={"Booking"}
-            onPress={handleBooking}
-          />
-        </View>
-        <View style={{ width: width / 2 - 10, paddingHorizontal: 5 }}>
-          <Button
-            buttonStyle={[styles.buttonStyle, styles.buttonMoveTo]}
-            titleStyle={{ color: "#94731a" }}
-            containerStyle={{ borderWidth: 1, borderColor: "#94731a" }}
-            title={"Move to booking"}
-            onPress={handleBooking}
-          />
-        </View>
-      </View>
     </View>
   );
 };
