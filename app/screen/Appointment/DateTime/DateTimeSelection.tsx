@@ -17,6 +17,7 @@ import { StylistDTO } from '@/dtos/Stylist.dto';
 import { ScheduleService } from '@/service/ScheduleServices';
 
 
+
 type RouteParams = {
   params: {
     selectedServices: ServiceDTO[]; // Update to use selectedServices
