@@ -288,7 +288,7 @@ export default function HomeScreen({navigation}: any) {
                     <View style={{alignItems: "center"}}>
                         <Button
                             title="Đặt Lịch Ngay"
-                            onPress={() => navigation.navigate("AppointmentSelectItem")}
+                            onPress={() => navigation.navigate("AppointmentStack")}
                             buttonStyle={{
                                 backgroundColor: "#f08080",
                                 marginTop: 20,
