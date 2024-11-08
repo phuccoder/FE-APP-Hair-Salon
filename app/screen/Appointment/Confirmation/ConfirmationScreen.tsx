@@ -17,7 +17,7 @@ import { ApplicationConstants } from '@/constants/ApplicationConstants';
 import { AppointmentService } from '@/service/appointmentService';
 import Toast from 'react-native-toast-message';
 import { jwtDecode } from 'jwt-decode';
-import moment from 'moment';
+
 
 const AppointmentConfirmation: React.FC = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -217,7 +217,7 @@ const AppointmentConfirmation: React.FC = () => {
       const formattedDateTime = `${datePart} ${startTime}:00`;
 
       const data = {
-        appointmentDate: formattedDate,
+        appointmentDate: formattedDateTime,
         accountID: Number(accountID),
         stylistID: Number(selectedStylist.stylistID),
         details,
